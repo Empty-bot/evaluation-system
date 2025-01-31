@@ -33,8 +33,19 @@ CREATE TABLE IF NOT EXISTS questionnaires (
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
+-- Table des questions
+CREATE TABLE IF NOT EXISTS questions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    questionnaire_id INT NOT NULL,
+    label TEXT NOT NULL,
+    type ENUM('text', 'multiple_choice', 'boolean') NOT NULL,
+    possible_answers JSON NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id) ON DELETE CASCADE
+);
 
--- Index pour optimiser les recherches
-CREATE INDEX idx_user_email ON users(email);
-CREATE INDEX idx_user_role ON users(role);
-CREATE INDEX idx_course_code ON courses(code);
+
+-- -- Index pour optimiser les recherches
+-- CREATE INDEX idx_user_email ON users(email);
+-- CREATE INDEX idx_user_role ON users(role);
+-- CREATE INDEX idx_course_code ON courses(code);
