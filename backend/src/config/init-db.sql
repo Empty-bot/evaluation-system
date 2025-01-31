@@ -22,6 +22,18 @@ CREATE TABLE IF NOT EXISTS courses (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Table des questionnaires
+CREATE TABLE IF NOT EXISTS questionnaires (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status ENUM('draft', 'published') DEFAULT 'draft',
+    course_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+);
+
+
 -- Index pour optimiser les recherches
 CREATE INDEX idx_user_email ON users(email);
 CREATE INDEX idx_user_role ON users(role);

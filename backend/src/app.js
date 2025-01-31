@@ -4,6 +4,7 @@ const { testConnection } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const courseRoutes = require('./routes/courses');
+const questionnaireRoutes = require('./routes/questionnaires');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/questionnaires', questionnaireRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {
