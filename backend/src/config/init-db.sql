@@ -58,6 +58,10 @@ CREATE TABLE IF NOT EXISTS responses (
 );
 
 
+-- Indexer les tables pour améliorer la rapidité des requêtes
+ALTER TABLE users ADD INDEX (email);
+ALTER TABLE responses ADD INDEX (questionnaire_id);
+ALTER TABLE responses ADD INDEX (question_id);
 
 -- -- Index pour optimiser les recherches
 -- CREATE INDEX idx_user_email ON users(email);
