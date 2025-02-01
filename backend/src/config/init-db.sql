@@ -44,6 +44,20 @@ CREATE TABLE IF NOT EXISTS questions (
     FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id) ON DELETE CASCADE
 );
 
+-- Table des réponses aux questions
+CREATE TABLE IF NOT EXISTS responses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    questionnaire_id INT NOT NULL,
+    question_id INT NOT NULL,
+    answer TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id) ON DELETE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
+);
+
+
 
 -- -- Index pour optimiser les recherches
 -- CREATE INDEX idx_user_email ON users(email);

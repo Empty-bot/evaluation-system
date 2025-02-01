@@ -6,7 +6,7 @@ const userRoutes = require('./routes/users');
 const courseRoutes = require('./routes/courses');
 const questionnaireRoutes = require('./routes/questionnaires');
 const questionRoutes = require('./routes/questions');
-
+const responseRoutes = require('./routes/responses');
 
 const app = express();
 
@@ -20,6 +20,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/questionnaires', questionnaireRoutes);
 app.use('/api/questions', questionRoutes);
+app.use('/api/responses', responseRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {
