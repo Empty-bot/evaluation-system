@@ -1,7 +1,8 @@
 const Question = require('../models/Question');
 const Response = require('../models/Response');
 const Questionnaire = require("../models/Questionnaire");
-
+const Users = require("../models/Users");
+const sendEmail = require("../config/mailer");
 
 const responseController = {
     async submitResponse(req, res) {
@@ -39,6 +40,19 @@ const responseController = {
             }
     
             const responseId = await Response.create({ user_id, questionnaire_id, question_id, answer });
+
+            // Récupérer les emails des admins
+            const admins = await Users.findByRole("admin");
+
+            // Envoyer un email aux admins
+            admins.forEach(admin => {
+                sendEmail(
+                    admin.email,
+                    `📊 Nouvelle réponse soumise`,
+                    `Un étudiant a répondu à un questionnaire. Connectez-vous pour voir les résultats.`
+                );
+            });
+
             res.status(201).json({ message: "Réponse soumise avec succès.", id: responseId });
     
         } catch (error) {

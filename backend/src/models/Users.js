@@ -1,7 +1,7 @@
 const { pool } = require('../config/database');
 const bcrypt = require('bcryptjs');
 
-class User {
+class Users {
     static async create({ email, password, role, department }) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const [result] = await pool.execute(
@@ -49,6 +49,24 @@ class User {
         const [result] = await pool.execute('DELETE FROM users WHERE id = ?', [id]);
         return result.affectedRows > 0;
     }
+
+    static async findByCourse(course_id) {
+        const [rows] = await pool.execute(
+            `SELECT users.id, users.email FROM users 
+             JOIN enrollments ON users.id = enrollments.user_id 
+             WHERE enrollments.course_id = ? AND users.role = 'student'`,
+            [course_id]
+        );
+        return rows;
+    }
+
+    static async findByRole(role) {
+        const [rows] = await pool.execute(
+            `SELECT id, email FROM users WHERE role = ?`,
+            [role]
+        );
+        return rows;
+    }
 }
 
-module.exports = User;
+module.exports = Users;

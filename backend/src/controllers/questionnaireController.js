@@ -1,5 +1,7 @@
 const Questionnaire = require('../models/Questionnaire');
 const Enrollment = require("../models/Enrollment");
+const sendEmail = require("../config/mailer");
+const Users = require("../models/Users");
 
 const questionnaireController = {
     async getAll(req, res) {
@@ -36,7 +38,20 @@ const questionnaireController = {
         try {
             const { title, description, status, course_id } = req.body;
             const questionnaireId = await Questionnaire.create({ title, description, status, course_id });
-            res.status(201).json({ message: "Questionnaire créé avec succès.", id: questionnaireId });
+
+            // Récupérer les étudiants inscrits au cours
+            const students = await Users.findByCourse(course_id);
+
+            // Envoyer un email uniquement aux étudiants du cours
+            students.forEach(student => {
+                sendEmail(
+                    student.email,
+                    `📚 Nouveau questionnaire disponible : ${title}`,
+                    `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre.`
+                );
+            });
+
+            res.status(201).json({ message: "Questionnaire créé et notifications envoyées avec succès.", id: questionnaireId });
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la création du questionnaire." });
         }

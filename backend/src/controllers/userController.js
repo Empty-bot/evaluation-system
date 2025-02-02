@@ -1,4 +1,4 @@
-const User = require('../models/Users');
+const Users = require('../models/Users');
 
 const userController = {
     async getAllUsers(req, res) {
@@ -12,13 +12,35 @@ const userController = {
 
     async getUserById(req, res) {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await Users.findById(req.params.id);
             if (!user) {
                 return res.status(404).json({ error: "Utilisateur non trouvé." });
             }
             res.json(user);
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération de l'utilisateur." });
+        }
+    },
+
+    async getUsersByCourse(req, res) {
+        try {
+            const { id } = req.params;
+            const students = await Users.findByCourse(id);
+            res.json(students);
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération des étudiants :", error);
+            res.status(500).json({ error: "Erreur lors de la récupération des étudiants du cours." });
+        }
+    },
+
+    async getUsersByRole(req, res) {
+        try {
+            const { role } = req.params;
+            const users = await Users.findByRole(role);
+            res.json(users);
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération des utilisateurs par rôle :", error);
+            res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs." });
         }
     },
 
@@ -38,7 +60,7 @@ const userController = {
 
     async deleteUser(req, res) {
         try {
-            const deleted = await User.delete(req.params.id);
+            const deleted = await Users.delete(req.params.id);
             if (!deleted) {
                 return res.status(404).json({ error: "Utilisateur non trouvé." });
             }
