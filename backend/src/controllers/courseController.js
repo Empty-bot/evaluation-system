@@ -28,6 +28,7 @@ const courseController = {
             const courseId = await Course.create({ code, name, department });
             res.status(201).json({ message: "Cours créé avec succès.", id: courseId });
         } catch (error) {
+            console.error("❌ Erreur lors de la création du cours :", error);
             res.status(500).json({ error: "Erreur lors de la création du cours." });
         }
     },

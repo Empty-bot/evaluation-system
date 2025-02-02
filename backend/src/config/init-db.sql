@@ -57,11 +57,23 @@ CREATE TABLE IF NOT EXISTS responses (
     FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 );
 
+-- Table des inscriptions des étudiants aux cours
+CREATE TABLE IF NOT EXISTS enrollments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    course_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_enrollment (user_id, course_id) -- Empêcher les doublons
+);
+
+
 
 -- Indexer les tables pour améliorer la rapidité des requêtes
-ALTER TABLE users ADD INDEX (email);
-ALTER TABLE responses ADD INDEX (questionnaire_id);
-ALTER TABLE responses ADD INDEX (question_id);
+-- ALTER TABLE users ADD INDEX (email);
+-- ALTER TABLE responses ADD INDEX (questionnaire_id);
+-- ALTER TABLE responses ADD INDEX (question_id);
 
 -- -- Index pour optimiser les recherches
 -- CREATE INDEX idx_user_email ON users(email);

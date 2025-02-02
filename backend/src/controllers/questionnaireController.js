@@ -1,9 +1,19 @@
 const Questionnaire = require('../models/Questionnaire');
+const Enrollment = require("../models/Enrollment");
 
 const questionnaireController = {
     async getAll(req, res) {
         try {
-            const questionnaires = await Questionnaire.findAll();
+            let questionnaires;
+            if (req.user.role === "admin") {
+                // L'admin voit tous les questionnaires
+                questionnaires = await Questionnaire.findAll();
+            } else if (req.user.role === "student") {
+                // Un étudiant voit seulement les questionnaires de ses cours
+                questionnaires = await Questionnaire.findByStudent(req.user.userId);
+            } else {
+                return res.status(403).json({ error: "Accès refusé." });
+            }
             res.json(questionnaires);
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });

@@ -1,20 +1,25 @@
 const Question = require('../models/Question');
 const Response = require('../models/Response');
+const Questionnaire = require("../models/Questionnaire");
+
 
 const responseController = {
     async submitResponse(req, res) {
         try {
             const { questionnaire_id, question_id, answer } = req.body;
             const user_id = req.user.userId;
+
+            // Vérifier si l'étudiant est inscrit au cours du questionnaire
+            const isEnrolled = await Questionnaire.isStudentEnrolled(user_id, questionnaire_id);
+            if (!isEnrolled) {
+                return res.status(403).json({ error: "Vous n'êtes pas inscrit à ce cours." });
+            }
     
             // Vérifier si la question existe
             const question = await Question.findById(question_id);
             if (!question) {
                 return res.status(400).json({ error: "La question spécifiée n'existe pas." });
             }
-    
-            // Afficher possible_answers dans les logs pour voir son format
-            console.log("🔍 possible_answers brut:", question.possible_answers);
     
             // Validation selon le type de question
             if (question.type === 'multiple_choice') {
@@ -25,7 +30,6 @@ const responseController = {
                     possibleAnswers = JSON.parse(possibleAnswers); // Convertir en tableau JS
                 }
     
-                console.log("✅ possibleAnswers après parsing :", possibleAnswers);
     
                 if (!possibleAnswers.includes(answer)) {
                     return res.status(400).json({ 

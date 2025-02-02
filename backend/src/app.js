@@ -11,6 +11,7 @@ const { generalLimiter, authLimiter } = require("./middleware/rateLimit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const logger = require("./config/logger");
+const enrollmentRoutes = require("./routes/enrollments");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/questionnaires', questionnaireRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/responses', responseRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {
