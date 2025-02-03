@@ -3,6 +3,8 @@ const Response = require('../models/Response');
 const Questionnaire = require("../models/Questionnaire");
 const Users = require("../models/Users");
 const sendEmail = require("../config/mailer");
+const crypto = require("crypto");
+const SALT_SECRET = process.env.SALT_SECRET || "random_salt"; // Utiliser un sel pour sécuriser les hashes
 
 const responseController = {
     async submitResponse(req, res) {
@@ -38,8 +40,24 @@ const responseController = {
                     });
                 }
             }
+
+            // Générer un identifiant anonymisé (SHA256)
+            const anonymous_id = crypto.createHash("sha256")
+                .update(`${user_id}-${questionnaire_id}-${SALT_SECRET}`)
+                .digest("hex");
+
+
+            //Logs pour vérification
+            console.log("🔍 Debug - questionnaire_id:", questionnaire_id);
+            console.log("🔍 Debug - question_id:", question_id);
+            console.log("🔍 Debug - answer:", answer);
+            console.log("🔍 Debug - user_id:", req.user.userId);
+            console.log("🔍 Debug - anonymous_id:", anonymous_id);
+            console.log("🔍 Debug - Generated anonymous_id:", anonymous_id);
+
+
     
-            const responseId = await Response.create({ user_id, questionnaire_id, question_id, answer });
+            const responseId = await Response.create({ anonymous_id, questionnaire_id, question_id, answer });
 
             // Récupérer les emails des admins
             const admins = await Users.findByRole("admin");
@@ -64,9 +82,24 @@ const responseController = {
     async getResponsesByQuestionnaire(req, res) {
         try {
             const { id } = req.params;
+
+
+            console.log("🔍 Debug - questionnaire_id:",id);
+
             const responses = await Response.findByQuestionnaire(id);
-            res.json(responses);
+
+            console.log("🔍 Debug - Responses found:", responses);
+
+            // Ne pas montrer `anonymous_id`
+            const anonymizedResponses = responses.map(r => ({
+                question_id: r.question_id,
+                label: r.label,
+                answer: r.answer
+            }));
+
+            res.json(anonymizedResponses);
         } catch (error) {
+            console.error("❌ Erreur lors de la récupération des réponses :", error);
             res.status(500).json({ error: "Erreur lors de la récupération des réponses." });
         }
     },
