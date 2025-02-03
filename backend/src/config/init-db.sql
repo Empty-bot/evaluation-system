@@ -80,6 +80,7 @@ ALTER TABLE responses ADD COLUMN anonymous_id VARCHAR(255) NOT NULL;
 
 ALTER TABLE responses ADD CONSTRAINT unique_response UNIQUE (anonymous_id, question_id);
 
+ALTER TABLE questionnaires ADD COLUMN status ENUM('draft', 'published', 'closed') NOT NULL DEFAULT 'draft';
 
 
 

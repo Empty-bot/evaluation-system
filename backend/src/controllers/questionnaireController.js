@@ -60,13 +60,25 @@ const questionnaireController = {
     async update(req, res) {
         try {
             const { title, description, status, course_id } = req.body;
-            const updated = await Questionnaire.update(req.params.id, { title, description, status, course_id });
-
-            if (!updated) {
+            const { id } = req.params;
+    
+            // Vérifier si le questionnaire existe et récupérer son statut actuel
+            const questionnaire = await Questionnaire.findById(id);
+            if (!questionnaire) {
                 return res.status(404).json({ error: "Questionnaire non trouvé." });
             }
+    
+            // Empêcher la modification des questionnaires publiés ou clôturés
+            if (questionnaire.status !== "draft") {
+                return res.status(403).json({ error: "Impossible de modifier un questionnaire publié ou clôturé." });
+            }
+    
+            // Mise à jour du questionnaire
+            const updated = await Questionnaire.update(id, { title, description, status, course_id });
             res.json({ message: "Questionnaire mis à jour avec succès." });
+    
         } catch (error) {
+            console.error("❌ Erreur lors de la mise à jour du questionnaire :", error);
             res.status(500).json({ error: "Erreur lors de la mise à jour du questionnaire." });
         }
     },

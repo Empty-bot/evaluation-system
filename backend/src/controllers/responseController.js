@@ -12,6 +12,15 @@ const responseController = {
             const { questionnaire_id, question_id, answer } = req.body;
             const user_id = req.user.userId;
 
+            // Vérifier si le questionnaire est toujours ouvert
+            const questionnaire = await Questionnaire.findById(questionnaire_id);
+            if (!questionnaire) {
+                return res.status(404).json({ error: "Questionnaire non trouvé." });
+            }
+            if (questionnaire.status === "closed") {
+                return res.status(403).json({ error: "Ce questionnaire est clôturé et ne peut plus être rempli." });
+            }
+
             // Vérifier si l'étudiant est inscrit au cours du questionnaire
             const isEnrolled = await Questionnaire.isStudentEnrolled(user_id, questionnaire_id);
             if (!isEnrolled) {
