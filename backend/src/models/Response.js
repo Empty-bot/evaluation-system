@@ -30,6 +30,15 @@ class Response {
         );
         return rows;
     }
+
+    static async hasAlreadyAnswered(anonymous_id, question_id) {
+        const [rows] = await pool.execute(
+            `SELECT 1 FROM responses WHERE anonymous_id = ? AND question_id = ?`,
+            [anonymous_id, question_id]
+        );
+        return rows.length > 0;
+    }
+    
 }
 
 module.exports = Response;

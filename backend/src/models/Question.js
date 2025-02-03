@@ -6,10 +6,13 @@ class Question {
         return rows;
     }
 
-    static async findById(id) {
-        const [rows] = await pool.execute('SELECT * FROM questions WHERE id = ?', [id]);
-        return rows[0] || null;
-    }
+    static async findById(question_id) {
+        const [rows] = await pool.execute(
+            `SELECT id, type, possible_answers FROM questions WHERE id = ?`,
+            [question_id]
+        );
+        return rows.length ? rows[0] : null;
+    }    
 
     static async create({ questionnaire_id, label, type, possible_answers }) {
         const [result] = await pool.execute(

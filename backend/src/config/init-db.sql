@@ -78,6 +78,10 @@ ALTER TABLE responses DROP COLUMN user_id;
 ALTER TABLE responses ADD COLUMN anonymous_id VARCHAR(255) NOT NULL;
 
 
+ALTER TABLE responses ADD CONSTRAINT unique_response UNIQUE (anonymous_id, question_id);
+
+
+
 
 -- Indexer les tables pour améliorer la rapidité des requêtes
 -- ALTER TABLE users ADD INDEX (email);

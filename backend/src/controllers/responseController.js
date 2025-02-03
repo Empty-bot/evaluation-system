@@ -46,6 +46,12 @@ const responseController = {
                 .update(`${user_id}-${questionnaire_id}-${SALT_SECRET}`)
                 .digest("hex");
 
+            // Vérifier si l'étudiant a déjà répondu à cette question
+            const alreadyAnswered = await Response.hasAlreadyAnswered(anonymous_id, question_id);
+            if (alreadyAnswered) {
+                return res.status(400).json({ error: "Vous avez déjà répondu à cette question." });
+            }
+
 
             //Logs pour vérification
             console.log("🔍 Debug - questionnaire_id:", questionnaire_id);
