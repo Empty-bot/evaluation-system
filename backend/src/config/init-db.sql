@@ -68,6 +68,15 @@ CREATE TABLE IF NOT EXISTS enrollments (
     UNIQUE KEY unique_enrollment (user_id, course_id) -- Empêcher les doublons
 );
 
+-- Supprimer la contrainte de clé étrangère
+ALTER TABLE responses DROP FOREIGN KEY responses_ibfk_1;
+
+-- Supprimer la colonne user_id
+ALTER TABLE responses DROP COLUMN user_id;
+
+-- Ajouter la nouvelle colonne anonymous_id
+ALTER TABLE responses ADD COLUMN anonymous_id VARCHAR(255) NOT NULL;
+
 
 
 -- Indexer les tables pour améliorer la rapidité des requêtes
