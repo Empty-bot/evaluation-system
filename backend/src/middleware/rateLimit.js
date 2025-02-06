@@ -12,8 +12,9 @@ const generalLimiter = rateLimit({
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5, // Max 5 tentatives
-    message: "Trop de tentatives de connexion. Réessayez plus tard.",
-    headers: true
+    message: { error: "Trop de tentatives de connexion. Réessayez plus tard." },
+    standardHeaders: true, // Renvoie des infos de rate limit dans les headers
+    legacyHeaders: false, // Désactive les headers X-RateLimit obsolètes
 });
 
 module.exports = { generalLimiter, authLimiter };
