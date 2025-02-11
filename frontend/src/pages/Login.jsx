@@ -34,11 +34,12 @@ const Login = () => {
   
       if (!response.ok) {
         // Utilisez le message d'erreur spécifique retourné par le backend
-        throw new Error(data.error || "Une erreur s'est produite");
+        throw new Error(data.error || "Une erreur s'est produite.");
       }
   
       // Stocker le token JWT et rediriger si nécessaire
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       alert("Connexion réussie !");
     } catch (err) {
       // Affichez le message d'erreur spécifique
