@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importez les icônes
 import logo from "../assets/LOGOUAM.png"; // Importez le logo
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // État pour afficher/masquer le mot de passe
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,10 +39,22 @@ const Login = () => {
         throw new Error(data.error || "Une erreur s'est produite.");
       }
   
-      // Stocker le token JWT et rediriger si nécessaire
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      alert("Connexion réussie !");
+      switch (data.user.role) {
+        case "admin":
+          navigate("/admin-dashboard");
+          break;
+        case "teacher":
+          navigate("/teacher-dashboard");
+          break;
+        case "student":
+          navigate("/student-dashboard");
+          break;
+        case "quality_manager":
+          navigate("/quality-dashboard");
+          break;
+        default:
+          navigate("/");
+      }
     } catch (err) {
       // Affichez le message d'erreur spécifique
       setError(err.message);
@@ -70,7 +84,7 @@ const Login = () => {
         <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8"> {/* Texte responsive */}
           Connexion
         </p>
-
+        {error && <p className="text-red-500">{error}</p>}
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="w-full space-y-4 md:space-y-6"> {/* Espacement responsive */}
           <div>
@@ -119,7 +133,6 @@ const Login = () => {
               )}
             </button>
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           {/* Conteneur pour le bouton et le lien */}
           <div className="flex items-center justify-between mt-6 md:mt-8"> {/* Espacement responsive */}
