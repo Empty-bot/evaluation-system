@@ -9,6 +9,19 @@ const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchType, setSearchType] = useState(""); // "email", "role" ou "course"
   const [searchValue, setSearchValue] = useState(""); // Valeur entrée par l'admin
+  const [formData, setFormData] = useState({
+    first_name: "",
+    surname: "",
+    email: "",
+    role: "student", // Valeur par défaut
+    department: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [formError, setFormError] = useState("");
+  const [formSuccess, setFormSuccess] = useState("");
+  const [formLoading, setFormLoading] = useState(false);
+  
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -17,7 +30,7 @@ const AdminDashboard = () => {
   
     if (searchType && searchValue) {
       if (searchType === "email") {
-        url = `http://localhost:3001/api/users/email/${searchValue}`;
+        url = `http://localhost:3001/api/users/emailsearch/${searchValue}`;
       } else if (searchType === "role") {
         url = `http://localhost:3001/api/users/role/${searchValue}`;
       } else if (searchType === "course") {
@@ -44,6 +57,54 @@ const AdminDashboard = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    setFormError("");
+    setFormSuccess("");
+    
+    // Vérifier que les mots de passe correspondent
+    if (formData.password !== formData.confirmPassword) {
+      setFormError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+  
+    setFormLoading(true);
+  
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+          department: formData.department,
+          first_name: formData.first_name,
+          surname: formData.surname,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Erreur lors de la création de l'utilisateur.");
+      }
+  
+      setFormSuccess("Utilisateur créé avec succès !");
+      setFormData({ first_name: "", surname: "", email: "", role: "student", department: "", password: "", confirmPassword: "" });
+  
+    } catch (error) {
+      setFormError(error.message);
+    } finally {
+      setFormLoading(false);
     }
   };
   
@@ -133,6 +194,112 @@ const AdminDashboard = () => {
             )}
           </div>
         );
+        case "new-user":
+          return (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold mb-4">Créer un nouvel utilisateur</h2>
+              
+              {formError && <p className="text-red-500">{formError}</p>}
+              {formSuccess && <p className="text-green-500">{formSuccess}</p>}
+
+              <form onSubmit={handleCreateUser} className="space-y-4">
+                {/* Prénom et Nom */}
+                <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                  <input 
+                    type="text" 
+                    placeholder="Prénom"
+                    value={formData.first_name}
+                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                    required
+                    className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Nom"
+                    value={formData.surname}
+                    onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
+                    required
+                    className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+                  />
+                </div>
+
+                {/* Email */}
+                <input 
+                  type="email" 
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                  className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                />
+
+                {/* Rôle */}
+                <select 
+                  value={formData.role} 
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  required
+                >
+                  <option value="student">Étudiant</option>
+                  <option value="teacher">Enseignant</option>
+                  <option value="quality_manager">Responsable qualité</option>
+                  <option value="admin">Administrateur</option>
+                </select>
+
+                {/* Département */}
+                <input 
+                  type="text" 
+                  placeholder="Département (facultatif)"
+                  value={formData.department}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                />
+
+                {/* Mot de passe et Confirmation */}
+                <div className="flex flex-col space-y-2">
+                  <div className="flex space-x-4">
+                    <input 
+                      type="password" 
+                      placeholder="Mot de passe"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+                    />
+                    <input 
+                      type="password" 
+                      placeholder="Confirmer le mot de passe"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      required
+                      className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+                    />
+                  </div>
+  
+                  {/* Affichage du message d'erreur si les mots de passe ne correspondent pas */}
+                  {formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                    <p className="text-red-500 text-sm">Les mots de passe ne correspondent pas.</p>
+                  )}
+                </div>
+
+
+                {/* Bouton de soumission */}
+                <button 
+                  type="submit"
+                  disabled={formLoading || formData.password !== formData.confirmPassword}
+                  className={`px-4 py-2 rounded-lg ${
+                    formLoading || formData.password !== formData.confirmPassword
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }`}
+                >
+                  {formLoading ? "Création..." : "Créer l'utilisateur"}
+                </button>
+
+              </form>
+            </div>
+          );       
+
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">

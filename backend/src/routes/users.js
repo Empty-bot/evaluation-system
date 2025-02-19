@@ -10,6 +10,7 @@ router.delete('/:id', auth, checkRole(['admin']), userController.deleteUser);
 router.get("/course/:id", auth, checkRole(["admin"]), userController.getUsersByCourse);
 router.get("/role/:role", auth, checkRole(["admin"]), userController.getUsersByRole);
 router.get("/email/:email", auth, checkRole(["admin"]), userController.getUsersByEmail);
+router.get("/emailsearch/:email", auth, checkRole(["admin"]), userController.searchUsersByEmail);
 
 module.exports = router;
 

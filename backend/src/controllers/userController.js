@@ -33,6 +33,17 @@ const userController = {
         }
     },
 
+    async searchUsersByEmail(req, res) {
+        try {
+            const { email } = req.params;
+            const users = await Users.searchByEmail(email);
+            res.json(users);
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération des utilisateurs par email :", error);
+            res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs." });
+        }
+    },
+
     async getUsersByCourse(req, res) {
         try {
             const { id } = req.params;
