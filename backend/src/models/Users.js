@@ -16,7 +16,7 @@ class Users {
             'SELECT * FROM users WHERE email = ?',
             [email]
         );
-        return rows[0];
+        return rows;
     }
 
     static async verifyPassword(password, hashedPassword) {
@@ -52,7 +52,7 @@ class Users {
 
     static async findByCourse(course_id) {
         const [rows] = await pool.execute(
-            `SELECT users.id, users.email FROM users 
+            `SELECT * FROM users 
              JOIN enrollments ON users.id = enrollments.user_id 
              WHERE enrollments.course_id = ? AND users.role = 'student'`,
             [course_id]
@@ -62,7 +62,7 @@ class Users {
 
     static async findByRole(role) {
         const [rows] = await pool.execute(
-            `SELECT id, email, role, department, first_name, surname, FROM users WHERE role = ?`,
+            `SELECT * FROM users WHERE role = ?`,
             [role]
         );
         return rows;
