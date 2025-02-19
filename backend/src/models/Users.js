@@ -2,11 +2,11 @@ const { pool } = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 class Users {
-    static async create({ email, password, role, department }) {
+    static async create({ email, password, role, department, first_name, surname }) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const [result] = await pool.execute(
-            'INSERT INTO users (email, password, role, department) VALUES (?, ?, ?, ?)',
-            [email, hashedPassword, role, department]
+            'INSERT INTO users (email, password, role, department, first_name, surname) VALUES (?, ?, ?, ?, ?, ?)',
+            [email, hashedPassword, role, department, first_name, surname]
         );
         return result.insertId;
     }
@@ -25,21 +25,21 @@ class Users {
 
     // Récupérer tous les utilisateurs
     static async findAll() {
-        const [rows] = await pool.execute('SELECT id, email, role, department FROM users');
+        const [rows] = await pool.execute('SELECT id, email, role, department, first_name, surname FROM users');
         return rows;
     }
 
     // Récupérer un utilisateur par ID
     static async findById(id) {
-        const [rows] = await pool.execute('SELECT id, email, role, department FROM users WHERE id = ?', [id]);
+        const [rows] = await pool.execute('SELECT id, email, role, department, first_name, surname FROM users WHERE id = ?', [id]);
         return rows[0] || null;
     }
 
     // Mettre à jour un utilisateur
     static async update(id, { email, role, department }) {
         const [result] = await pool.execute(
-            'UPDATE users SET email = ?, role = ?, department = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-            [email, role, department, id]
+            'UPDATE users SET email = ?, role = ?, department = ?, updated_at = CURRENT_TIMESTAMP, first_name = ?, surname = ? WHERE id = ?',
+            [email, role, department, first_name, surname, id]
         );
         return result.affectedRows > 0;
     }
@@ -62,7 +62,7 @@ class Users {
 
     static async findByRole(role) {
         const [rows] = await pool.execute(
-            `SELECT id, email FROM users WHERE role = ?`,
+            `SELECT id, email, role, department, first_name, surname, FROM users WHERE role = ?`,
             [role]
         );
         return rows;

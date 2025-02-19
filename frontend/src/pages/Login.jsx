@@ -39,6 +39,9 @@ const Login = () => {
         throw new Error(data.error || "Une erreur s'est produite.");
       }
   
+      // Stocker le token JWT et rediriger si nécessaire
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       switch (data.user.role) {
         case "admin":
           navigate("/admin-dashboard");

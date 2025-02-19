@@ -4,7 +4,7 @@ const User = require('../models/Users');
 const authController = {
     async register(req, res) {
         try {
-            const { email, password, role, department } = req.body;
+            const { email, password, role, department, first_name, surname } = req.body;
             
             // Vérifier si l'utilisateur existe déjà
             const existingUser = await User.findByEmail(email);
@@ -13,7 +13,7 @@ const authController = {
             }
 
             // Créer le nouvel utilisateur
-            const userId = await User.create({ email, password, role, department });
+            const userId = await User.create({ email, password, role, department, first_name, surname });
             
             res.status(201).json({ message: 'Utilisateur créé avec succès.' });
         } catch (error) {
@@ -39,7 +39,7 @@ const authController = {
 
             // Créer le token
             const token = jwt.sign(
-                { userId: user.id, email: user.email, role: user.role },
+                { userId: user.id, email: user.email, role: user.role, first_name: user.first_name, surname: user.surname },
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
@@ -48,7 +48,9 @@ const authController = {
                 id: user.id,
                 email: user.email,
                 role: user.role,
-                department: user.department
+                department: user.department,
+                first_name: user.first_name,
+                surname: user.surname
             }});
         } catch (error) {
             res.status(500).json({ error: 'Erreur lors de la connexion.' });

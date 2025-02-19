@@ -1,6 +1,6 @@
-const DashboardQuality = () => {
+const QualityDashboard = () => {
     return <h1>Dashboard Qualité (En construction)</h1>;
   };
   
-  export default DashboardQuality;
+  export default QualityDashboard;
   

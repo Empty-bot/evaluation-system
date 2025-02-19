@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import DashboardAdmin from "../pages/DashboardAdmin";
-import DashboardTeacher from "../pages/DashboardTeacher";
-import DashboardStudent from "../pages/DashboardStudent";
-import DashboardQuality from "../pages/DashboardQuality";
+import AdminDashboard from "../pages/AdminDashboard";
+import TeacherDashboard from "../pages/TeacherDashboard";
+import StudentDashboard from "../pages/StudentDashboard";
+import QualityDashboard from "../pages/QualityDashboard";
 import PrivateRoute from "./PrivateRoute";
 
 const AppRouter = () => {
@@ -19,19 +19,19 @@ const AppRouter = () => {
       </Route>
   
       <Route element={<PrivateRoute allowedRoles={['admin']} />}>
-        <Route path="/admin-dashboard" element={<DashboardAdmin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Route>
 
       <Route element={<PrivateRoute allowedRoles={['teacher']} />}>
-        <Route path="/teacher-dashboard" element={<DashboardTeacher />} />
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
       </Route>
 
       <Route element={<PrivateRoute allowedRoles={['student']} />}>
-        <Route path="/student-dashboard" element={<DashboardStudent />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
       </Route>
 
       <Route element={<PrivateRoute allowedRoles={['quality_manager']} />}>
-        <Route path="/quality-dashboard" element={<DashboardQuality />} />
+        <Route path="/quality-dashboard" element={<QualityDashboard />} />
       </Route>
     </Routes>
   );

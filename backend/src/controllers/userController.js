@@ -3,7 +3,7 @@ const Users = require('../models/Users');
 const userController = {
     async getAllUsers(req, res) {
         try {
-            const users = await User.findAll();
+            const users = await Users.findAll();
             res.json(users);
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs." });
@@ -47,7 +47,7 @@ const userController = {
     async updateUser(req, res) {
         try {
             const { email, role, department } = req.body;
-            const updated = await User.update(req.params.id, { email, role, department });
+            const updated = await Users.update(req.params.id, { email, role, department });
 
             if (!updated) {
                 return res.status(404).json({ error: "Utilisateur non trouvé." });

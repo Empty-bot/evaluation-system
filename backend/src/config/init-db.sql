@@ -82,7 +82,9 @@ ALTER TABLE responses ADD CONSTRAINT unique_response UNIQUE (anonymous_id, quest
 
 ALTER TABLE questionnaires ADD COLUMN status ENUM('draft', 'published', 'closed') NOT NULL DEFAULT 'draft';
 
-
+ALTER TABLE users
+ADD first_name VARCHAR(50) NOT NULL,
+ADD surname VARCHAR(50) NOT NULL;
 
 -- Indexer les tables pour améliorer la rapidité des requêtes
 -- ALTER TABLE users ADD INDEX (email);
