@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserCircle, Users, UserPlus, FilePlus2, Bell, LogOut, FileSpreadsheet, PanelRightOpen, PanelLeftOpen, Pencil, Trash2, Search } from 'lucide-react';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import FormManagement from "../components/admin/FormManagement";
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -340,6 +341,10 @@ const AdminDashboard = () => {
             </form>
           </div>
         );
+
+        case "forms":
+          return <FormManagement />;
+
     
             
 
