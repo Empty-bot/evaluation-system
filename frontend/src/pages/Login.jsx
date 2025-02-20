@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importez les icônes
-import logo from "../assets/LOGOUAM.png"; // Importez le logo
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import logo from "../assets/LOGOUAM.png"; 
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
