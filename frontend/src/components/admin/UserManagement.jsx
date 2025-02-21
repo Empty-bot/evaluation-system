@@ -9,7 +9,8 @@ const UserManagement = () => {
   const [searchType, setSearchType] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [editingUserId, setEditingUserId] = useState(null); // Nouvel état
-
+  const [userToDelete, setUserToDelete] = useState(null);
+  
   const fetchUsers = async () => {
     setLoading(true);
     setError(null);
@@ -50,10 +51,63 @@ const UserManagement = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+  
+  const confirmDeleteUser = (user) => {
+    setUserToDelete(user); // Stocke l'utilisateur à supprimer
+  };
+  
+
+  const deleteUser = async () => {
+    if (!userToDelete) return;
+  
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:3001/api/users/${userToDelete.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de l'utilisateur.");
+      }
+  
+      // Rafraîchir la liste des utilisateurs après suppression
+      setUsers(users.filter(user => user.id !== userToDelete.id));
+      setUserToDelete(null); // Ferme le popup
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  
 
   return (
     <div className="space-y-4">
       
+      {userToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg mb-4">
+                Êtes-vous sûr de vouloir supprimer <strong>{userToDelete.first_name} {userToDelete.surname}</strong> ?
+                Cette action est <span className="text-red-600 font-bold">irréversible</span>.
+            </p>
+            <div className="flex justify-end space-x-4">
+                <button 
+                onClick={deleteUser} 
+                className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg"
+                >
+                Oui, supprimer
+                </button>
+                <button 
+                onClick={() => setUserToDelete(null)} 
+                className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg"
+                >
+                Annuler
+                </button>
+            </div>
+            </div>
+        </div>
+       )}
+
 
       {/* Si un utilisateur est en cours de modification, afficher EditUserForm */}
       {editingUserId ? (
@@ -128,6 +182,7 @@ const UserManagement = () => {
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button 
+                          onClick={() => confirmDeleteUser(user)}  
                           className="text-red-600 hover:text-red-900 p-1 rounded bg-transparent border-none ml-2"
                           title="Supprimer"
                         >
