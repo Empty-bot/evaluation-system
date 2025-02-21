@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/Users');
+const Users = require('../models/Users');
 
 const authController = {
     async register(req, res) {
@@ -7,13 +7,13 @@ const authController = {
             const { email, password, role, department, first_name, surname } = req.body;
             
             // Vérifier si l'utilisateur existe déjà
-            const existingUser = await User.findByEmail(email);
+            const existingUser = await Users.findByEmail(email);
             if (existingUser) {
                 return res.status(400).json({ error: 'Cet email est déjà utilisé.' });
             }
 
             // Créer le nouvel utilisateur
-            const userId = await User.create({ email, password, role, department, first_name, surname });
+            const userId = await Users.create({ email, password, role, department, first_name, surname });
             
             res.status(201).json({ message: 'Utilisateur créé avec succès.' });
         } catch (error) {
@@ -26,13 +26,13 @@ const authController = {
             const { email, password } = req.body;
             
             // Trouver l'utilisateur
-            const user = await User.findByEmail(email);
+            const user = await Users.findByEmail(email);
             if (!user) {
                 return res.status(401).json({ error: 'Email ou mot de passe incorrect.' });
             }
 
             // Vérifier le mot de passe
-            const isValid = await User.verifyPassword(password, user.password);
+            const isValid = await Users.verifyPassword(password, user.password);
             if (!isValid) {
                 return res.status(401).json({ error: 'Email ou mot de passe incorrect.' });
             }

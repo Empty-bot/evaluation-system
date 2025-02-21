@@ -42,7 +42,7 @@ const NewUserForm = ({ onCreateUser }) => {
 
   return (
     <div className="space-y-6 max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold mb-4">Créer un nouvel utilisateur</h2>
+      <h2 className="text-xl text-center font-semibold mb-4">Créer un nouvel utilisateur</h2>
       {formError && <p className="text-red-500">{formError}</p>}
       {formSuccess && <p className="text-green-500">{formSuccess}</p>}
 

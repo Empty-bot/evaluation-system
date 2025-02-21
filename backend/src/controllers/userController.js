@@ -68,8 +68,8 @@ const userController = {
 
     async updateUser(req, res) {
         try {
-            const { email, role, department } = req.body;
-            const updated = await Users.update(req.params.id, { email, role, department });
+            const { email, role, department, first_name, surname } = req.body;
+            const updated = await Users.update(req.params.id, { email, role, department, first_name, surname });
 
             if (!updated) {
                 return res.status(404).json({ error: "Utilisateur non trouvé." });

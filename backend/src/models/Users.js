@@ -44,7 +44,7 @@ class Users {
     }
 
     // Mettre à jour un utilisateur
-    static async update(id, { email, role, department }) {
+    static async update(id, { email, role, department, first_name, surname }) {
         const [result] = await pool.execute(
             'UPDATE users SET email = ?, role = ?, department = ?, updated_at = CURRENT_TIMESTAMP, first_name = ?, surname = ? WHERE id = ?',
             [email, role, department, first_name, surname, id]
@@ -75,6 +75,12 @@ class Users {
         );
         return rows;
     }
+
+    static async findPasswordById(id) {
+        const [rows] = await pool.execute('SELECT password FROM users WHERE id = ?', [id]);
+        return rows[0]?.password || null;
+    }
+    
 }
 
 module.exports = Users;
