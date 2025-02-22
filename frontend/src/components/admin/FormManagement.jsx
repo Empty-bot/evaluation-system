@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import QuestionList from "./QuestionList";
 
 const FormManagement = () => {
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedForm, setSelectedForm] = useState(null);
 
   const fetchForms = async () => {
     setLoading(true);
@@ -36,6 +38,10 @@ const FormManagement = () => {
     fetchForms();
   }, []);
 
+  if (selectedForm) {
+    return <QuestionList form={selectedForm} onBack={() => setSelectedForm(null)} />;
+  }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold mb-4">Liste des Formulaires</h2>
@@ -54,7 +60,7 @@ const FormManagement = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {forms.map((form) => (
-                <tr key={form.id} className="hover:bg-gray-100 cursor-pointer">
+                <tr key={form.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => setSelectedForm(form)}>
                   <td className="px-4 py-2 whitespace-nowrap">{form.title}</td>
                   <td className="px-4 py-2 whitespace-nowrap">{form.description}</td>
                   <td className="px-4 py-2 whitespace-nowrap">{form.status}</td>
