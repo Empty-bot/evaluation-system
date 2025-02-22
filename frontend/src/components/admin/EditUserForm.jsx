@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { ArrowLeft } from "lucide-react";
 const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
   const [formData, setFormData] = useState({
     first_name: "",
@@ -133,6 +133,14 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
   
 
   return (
+    <div>
+    <button 
+        type="button" 
+        onClick={onCancel} 
+        className="mb-4 p-2 bg-gray-100 hover:bg-gray-600 text-gray rounded-2xl"
+      >
+        <ArrowLeft className="w-5 h-5" />
+    </button>
     <div className="space-y-6 max-w-lg mx-auto">
     <h2 className="text-xl text-center font-semibold mb-4">Modifier les informations de {originalName.first_name} {originalName.surname}</h2>
     {error && <p className="text-red-500">{error}</p>}
@@ -175,7 +183,7 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
         </div>
       </div>
       <div className="flex space-x-4">
-        <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-400 text-white rounded-lg">Annuler</button>
+        <button type="button" onClick={onCancel} className="px-4 py-2 hover:bg-gray-600 bg-gray-400 text-white rounded-lg">Annuler</button>
         <button type="submit" disabled={loading} className={`px-4 py-2 rounded-lg w-full ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}>
             {loading ? "Modification..." : "Valider les changements"}
         </button>
@@ -203,6 +211,7 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
         </div>
       </div>
       )}
+  </div>
   </div>
   );
 };

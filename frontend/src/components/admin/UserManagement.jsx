@@ -11,10 +11,11 @@ const UserManagement = () => {
   const [editingUserId, setEditingUserId] = useState(null); // Nouvel état
   const [userToDelete, setUserToDelete] = useState(null);
   
+  const baseUrl = "http://localhost:3001/api/users/"; // URL de base
   const fetchUsers = async () => {
     setLoading(true);
     setError(null);
-    let url = "http://localhost:3001/api/users/";
+    let url = baseUrl
 
     if (searchType && searchValue) {
       if (searchType === "email") {
@@ -25,7 +26,7 @@ const UserManagement = () => {
         url = `http://localhost:3001/api/users/course/${searchValue}`;
       }
     }
-
+    
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(url, {
@@ -47,6 +48,20 @@ const UserManagement = () => {
       setLoading(false);
     }
   };
+
+  // Fonction pour réinitialiser le filtre
+  const resetFilter = () => {
+    setSearchType("");
+    setSearchValue("");
+  };
+
+  useEffect(() => {
+    if (searchType === "" && searchValue === "") {
+      fetchUsers(); // Relance la récupération des utilisateurs seulement après la mise à jour
+    }
+  }, [searchType, searchValue]);
+  
+
 
   useEffect(() => {
     fetchUsers();
@@ -148,6 +163,13 @@ const UserManagement = () => {
             >
               <Search className="w-5 h-5" />
             </button>
+            <button 
+                onClick={resetFilter} 
+                className="bg-gray-500 text-white p-2 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                Réinitialiser le filtre
+            </button>
+
           </div>
 
           {loading && <p className="text-gray-600">Chargement...</p>}
