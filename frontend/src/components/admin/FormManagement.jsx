@@ -205,7 +205,7 @@ const FormManagement = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {forms.map((form) => (
-                    <tr key={form.id}>
+                    <tr key={form.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => setSelectedForm(form)}>
                       <td className="px-4 py-2 whitespace-nowrap">{form.title}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{form.description}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{form.status}</td>
