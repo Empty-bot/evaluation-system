@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Pencil, Trash2, CircleArrowLeft } from "lucide-react";
+import ResponseList from "./ResponseList";
 
 const QuestionList = ({ form, onBack }) => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -36,17 +38,21 @@ const QuestionList = ({ form, onBack }) => {
     fetchQuestions();
   }, [form.id]);
 
+  if (selectedQuestion) {
+    return <ResponseList question={selectedQuestion} onBack={() => setSelectedQuestion(null)} />;
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-4">
-      <button 
-        type="button" 
-        onClick={onBack} 
-        className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
-      >
-        <CircleArrowLeft className="w-5 h-5" />
-    </button>
-        <h2 className="text-xl font-semibold">{form.title}</h2>
+        <button 
+          type="button" 
+          onClick={onBack} 
+          className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
+        >
+          <CircleArrowLeft className="w-5 h-5" />
+        </button>
+        <h2 className="text-xl font-semibold">Questions : {form.title}</h2>
       </div>
       <p className="text-gray-600">{form.description}</p>
 
@@ -64,7 +70,11 @@ const QuestionList = ({ form, onBack }) => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {questions.map((question) => (
-                <tr key={question.id} className="hover:bg-gray-100">
+                <tr 
+                  key={question.id} 
+                  className="hover:bg-gray-100 cursor-pointer" 
+                  onClick={() => setSelectedQuestion(question)}
+                >
                   <td className="px-4 py-2 whitespace-nowrap">{question.label}</td>
                   <td className="px-4 py-2 whitespace-nowrap">{question.type}</td>
                   <td className="px-4 py-2 whitespace-nowrap">
@@ -86,3 +96,4 @@ const QuestionList = ({ form, onBack }) => {
 };
 
 export default QuestionList;
+

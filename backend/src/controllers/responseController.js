@@ -119,6 +119,35 @@ const responseController = {
         }
     },
 
+    async getByQuestion(req, res) {
+        try {
+            const { id } = req.params; // id de la question
+            
+            // Récupérer les réponses pour cette question
+            const responses = await Response.findByQuestion(id);
+            
+            if (!responses || responses.length === 0) {
+                return res.status(404).json({ 
+                    error: "Aucune réponse trouvée pour cette question." 
+                });
+            }
+
+            const anonymizedResponses = responses.map(r => ({
+                question_id: r.question_id,
+                label: r.label,
+                answer: r.answer
+            }));
+    
+            res.json(anonymizedResponses);
+            
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération des réponses :", error);
+            res.status(500).json({ 
+                error: "Erreur lors de la récupération des réponses pour cette question." 
+            });
+        }
+    },
+
     async getUserResponses(req, res) {
         try {
             const user_id = req.user.userId;

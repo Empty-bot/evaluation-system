@@ -20,6 +20,18 @@ class Response {
         return rows;
     }
 
+    static async findByQuestion(question_id) {
+        const [rows] = await pool.execute(
+            `SELECT responses.*, questions.label, questionnaires.title as questionnaire_title
+             FROM responses
+             JOIN questions ON responses.question_id = questions.id
+             JOIN questionnaires ON responses.questionnaire_id = questionnaires.id
+             WHERE responses.question_id = ?`,
+            [question_id]
+        );
+        return rows;
+    }
+
     static async findByUser(user_id) {
         const [rows] = await pool.execute(
             `SELECT responses.*, questions.label 
