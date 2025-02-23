@@ -54,6 +54,14 @@ class Questionnaire {
         );
         return rows.length > 0;
     }
+
+    static async closeUpdate(id) {
+        const [result] = await pool.execute(
+            'UPDATE questionnaires SET status = ? WHERE id = ?',
+            ['closed', id]
+        );
+        return result.affectedRows > 0;
+    }
 }
 
 module.exports = Questionnaire;

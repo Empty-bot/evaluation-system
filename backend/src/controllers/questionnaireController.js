@@ -93,6 +93,37 @@ const questionnaireController = {
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la suppression du questionnaire." });
         }
+    },
+
+    async closeUpdate(req, res) {
+        try {
+            const { id } = req.params;
+            
+            // Vérifier si le questionnaire existe et récupérer son statut actuel
+            const questionnaire = await Questionnaire.findById(id);
+            if (!questionnaire) {
+                return res.status(404).json({ error: "Questionnaire non trouvé." });
+            }
+    
+            // Empêcher la fermeture des questionnaires déjà clôturés ou en brouillon
+            if (questionnaire.status === "closed") {
+                return res.status(403).json({ error: "Le questionnaire est déjà clôturé." });
+            }
+            if (questionnaire.status === "draft") {
+                return res.status(403).json({ error: "Impossible de clôturer un questionnaire en brouillon." });
+            }
+    
+            // Mise à jour du statut du questionnaire
+            const updated = await Questionnaire.closeUpdate(id);
+            if (!updated) {
+                return res.status(500).json({ error: "Échec de la clôture du questionnaire." });
+            }
+            res.json({ message: "Questionnaire clôturé avec succès." });
+            
+        } catch (error) {
+            console.error("❌ Erreur lors de la clôture du questionnaire :", error);
+            res.status(500).json({ error: "Erreur lors de la clôture du questionnaire." });
+        }
     }
 };
 
