@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { CircleArrowLeft } from "lucide-react";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+
 const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
   const [formData, setFormData] = useState({
     first_name: "",
@@ -134,17 +137,24 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
 
   return (
     <div>
-    <button 
-        type="button" 
-        onClick={onCancel} 
-        className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
-      >
-        <CircleArrowLeft className="w-5 h-5" />
-    </button>
     <div className="space-y-6 max-w-lg mx-auto">
-    <h2 className="text-xl text-center font-semibold mb-4">Modifier les informations de {originalName.first_name} {originalName.surname}</h2>
-    {error && <p className="text-red-500">{error}</p>}
-    {success && <p className="text-green-500">{success}</p>}
+    <div className="flex items-center gap-4">
+        <button 
+            type="button" 
+            onClick={onCancel} 
+            className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
+        >
+            <CircleArrowLeft className="w-5 h-5" />
+        </button>
+        <h2 className="text-xl text-center font-semibold mb-4">Modifier les informations de {originalName.first_name} {originalName.surname}</h2>
+    </div>
+    {error && (<Alert severity="error" sx={{ mb: 3 }}>
+              <AlertTitle>Erreur</AlertTitle>
+              {error}
+            </Alert>)}
+    {success && (<Alert severity="success" sx={{ mb: 3 }}>
+                    {success}
+                </Alert>)}
 
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-6 sm:space-y-0">
@@ -197,13 +207,13 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
           <div className="flex justify-end space-x-4"> {/* Ajout de justify-end pour aligner les boutons à droite */}
             <button 
               onClick={confirmUpdate} 
-              className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
             >
               Oui
             </button>
             <button 
               onClick={() => setShowConfirmPopup(false)} 
-              className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg"
             >
               Non, annuler
             </button>

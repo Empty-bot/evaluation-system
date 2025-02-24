@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CircleArrowLeft } from "lucide-react";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
   const [formData, setFormData] = useState({
@@ -99,15 +101,25 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
 
   return (
     <div>
-      {/* Bouton retour */}
-      <button type="button" onClick={onCancel} className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg">
-        <CircleArrowLeft className="w-5 h-5" />
-      </button>
-
       <div className="space-y-6 max-w-lg mx-auto">
-        <h2 className="text-xl text-center font-semibold mb-4">Modifier le questionnaire "{originalTitle}"</h2>
-        {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">{success}</p>}
+        <div className="flex items-center gap-4">
+            <button 
+                onClick={onCancel}
+                className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
+            >
+                <CircleArrowLeft className="w-5 h-5" />
+            </button>
+            <h2 className="text-xl text-center font-semibold mb-4">Modifier le questionnaire "{originalTitle}"</h2>
+        </div>
+        {error && (
+                <Alert severity="error" sx={{ mb: 3 }}>
+                  <AlertTitle>Erreur</AlertTitle>
+                  {error}
+                </Alert>
+              )}
+        {success && (<Alert severity="success" sx={{ mb: 3 }}>
+                            {success}
+                        </Alert>)}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -147,10 +159,10 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
       {showConfirmPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg mb-4">Êtes-vous sûr de vouloir modifier ce questionnaire ?</p>
+            <p className="text-lg mb-4">Confirmer les modifications ?</p>
             <div className="flex justify-end space-x-4">
-              <button onClick={confirmUpdate} className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg">Oui</button>
-              <button onClick={() => setShowConfirmPopup(false)} className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg">Non, annuler</button>
+              <button onClick={confirmUpdate} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Confirmer</button>
+              <button onClick={() => setShowConfirmPopup(false)} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Annuler</button>
             </div>
           </div>
         </div>

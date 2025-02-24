@@ -34,22 +34,59 @@ const responseController = {
             }
     
             // Validation selon le type de question
-            if (question.type === 'multiple_choice') {
-                let possibleAnswers = question.possible_answers;
-    
-                // Vérifier si c'est une chaîne JSON (et pas un tableau JavaScript)
-                if (typeof possibleAnswers === 'string') {
-                    possibleAnswers = JSON.parse(possibleAnswers); // Convertir en tableau JS
-                }
-    
-    
-                if (!possibleAnswers.includes(answer)) {
+            if (question.type === 'text') {
+                // Pour le type texte, on vérifie juste que la réponse n'est pas vide
+                if (!answer || answer.trim() === '') {
                     return res.status(400).json({ 
-                        error: `Réponse invalide. Options valides : ${possibleAnswers.join(", ")}` 
+                        error: "La réponse ne peut pas être vide pour une question de type texte." 
                     });
                 }
-            }
+            } else {
+                // Pour les types boolean et multiple_choice
+                let possibleAnswers = question.possible_answers;
 
+                // Vérifier si c'est une chaîne JSON et la convertir si nécessaire
+                if (typeof possibleAnswers === 'string') {
+                    try {
+                        possibleAnswers = JSON.parse(possibleAnswers);
+                    } catch (error) {
+                        console.error("Erreur lors du parsing des réponses possibles:", error);
+                        return res.status(500).json({ 
+                            error: "Erreur lors de la validation de la réponse." 
+                        });
+                    }
+                }
+
+                // Validation selon le type spécifique
+                if (question.type === 'boolean') {
+                    // Pour le type boolean, on doit avoir exactement 2 options et la réponse doit être l'une d'entre elles
+                    if (!Array.isArray(possibleAnswers) || possibleAnswers.length !== 2) {
+                        return res.status(500).json({ 
+                            error: "Configuration invalide pour une question booléenne." 
+                        });
+                    }
+                    
+                    if (!possibleAnswers.includes(answer)) {
+                        return res.status(400).json({ 
+                            error: `Réponse invalide. Les options possibles sont : ${possibleAnswers.join(" ou ")}` 
+                        });
+                    }
+                } else if (question.type === 'multiple_choice') {
+                    // Pour le type multiple_choice, la réponse doit être l'une des options disponibles
+                    if (!Array.isArray(possibleAnswers) || possibleAnswers.length < 2) {
+                        return res.status(500).json({ 
+                            error: "Configuration invalide pour une question à choix multiples." 
+                        });
+                    }
+
+                    if (!possibleAnswers.includes(answer)) {
+                        return res.status(400).json({ 
+                            error: `Réponse invalide. Options valides : ${possibleAnswers.join(", ")}` 
+                        });
+                    }
+                }
+            }
+            
             // Générer un identifiant anonymisé (SHA256)
             const anonymous_id = crypto.createHash("sha256")
                 .update(`${user_id}-${questionnaire_id}-${SALT_SECRET}`)

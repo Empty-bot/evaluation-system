@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const NewUserForm = ({ onCreateUser }) => {
   const [formData, setFormData] = useState({
@@ -43,8 +45,14 @@ const NewUserForm = ({ onCreateUser }) => {
   return (
     <div className="space-y-6 max-w-lg mx-auto">
       <h2 className="text-xl text-center font-semibold mb-4">Créer un nouvel utilisateur</h2>
-      {formError && <p className="text-red-500">{formError}</p>}
-      {formSuccess && <p className="text-green-500">{formSuccess}</p>}
+      {formError && (<Alert severity="error" sx={{ mb: 3 }}>
+                <AlertTitle>Erreur</AlertTitle>
+                {formError}
+              </Alert>
+            )}
+      {formSuccess && (<Alert severity="success" sx={{ mb: 3 }}>
+                          {formSuccess}
+                      </Alert>)}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-6 sm:space-y-0">
