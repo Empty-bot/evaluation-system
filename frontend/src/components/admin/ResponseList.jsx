@@ -51,7 +51,10 @@ const ResponseList = ({ question, onBack }) => {
         <h2 className="text-xl font-semibold">Réponses à : {question.label}</h2>
       </div>
 
-      {loading && <p className="text-gray-600">Chargement...</p>}
+      {loading && (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      </div>)}
       {error && (<Alert severity="error" sx={{ mb: 3 }}>
                           <AlertTitle>Erreur</AlertTitle>
                           {error}
