@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
-const NewUserForm = ({ onCreateUser }) => {
+const NewUserForm = () => {
   const [formData, setFormData] = useState({
     first_name: "",
     surname: "",
@@ -19,6 +19,47 @@ const NewUserForm = ({ onCreateUser }) => {
   const [formLoading, setFormLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  const handleCreateUser = async () => {
+    try {
+      const token = localStorage.getItem("token");    
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: { 
+            "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          first_name: formData.first_name,
+          surname: formData.surname,
+          email: formData.email,
+          role: formData.role,
+          department: formData.department || null,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Une erreur est survenue");
+      }
+
+      setFormSuccess("Utilisateur créé avec succès !");
+      setFormData({
+        first_name: "",
+        surname: "",
+        email: "",
+        role: "student",
+        department: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+    } catch (error) {
+      setFormError(error.message);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +72,7 @@ const NewUserForm = ({ onCreateUser }) => {
     }
 
     setFormLoading(true);
-    const success = await onCreateUser(formData);
+    const success = await handleCreateUser();
     setFormLoading(false);
 
     if (success) {
