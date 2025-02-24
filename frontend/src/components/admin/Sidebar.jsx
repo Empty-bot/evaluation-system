@@ -1,10 +1,14 @@
 import React from "react";
 import { UserCircle, Users, UserPlus, FilePlus2, Bell, LogOut, FileSpreadsheet } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+
 
 const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem("user")); // Récupérer l'utilisateur depuis le stockage local
   const userName = user ? `${user.first_name} ${user.surname}` : "Utilisateur"; // Afficher le prénom et le nom ou un texte par défaut  
-
+  const { logout } = useContext(AuthContext);
+  
   return (
     <div
       className={`w-64 bg-white shadow-lg flex flex-col fixed h-full transform transition-transform duration-200 ease-in-out ${
@@ -75,6 +79,7 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
       <div className="p-6 border-t">
         <a
           href="#"
+          onClick={logout}
           className="flex items-center space-x-2 text-gray-700 hover:text-red-600 p-2 rounded hover:bg-red-50"
         >
           <LogOut className="w-5 h-5" />

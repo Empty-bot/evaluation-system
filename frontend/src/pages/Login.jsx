@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import logo from "../assets/LOGOUAM.png"; 
 import { useNavigate } from "react-router-dom";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -87,7 +89,12 @@ const Login = () => {
         <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8"> {/* Texte responsive */}
           Connexion
         </p>
-        {error && <p className="text-red-500">{error}</p>}
+        {error && (
+                <Alert className="w-full" severity="error" sx={{ mb: 3 }}>
+                  <AlertTitle>Erreur</AlertTitle>
+                  {error}
+                </Alert>
+              )}
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="w-full space-y-4 md:space-y-6"> {/* Espacement responsive */}
           <div>
