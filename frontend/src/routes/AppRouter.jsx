@@ -15,10 +15,6 @@ const AppRouter = () => {
       {/* Routes protégées */}
       / Dans les routes protégées pour admin
       <Route element={<PrivateRoute allowedRoles={['admin']} />}>
-        <Route path="/register" element={<Register />} />
-      </Route> 
-  
-      <Route element={<PrivateRoute allowedRoles={['admin']} />}>
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Route>
 
