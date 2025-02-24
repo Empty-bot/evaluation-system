@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CircleArrowLeft } from "lucide-react";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const ResponseList = ({ question, onBack }) => {
   const [responses, setResponses] = useState([]);
@@ -50,7 +52,11 @@ const ResponseList = ({ question, onBack }) => {
       </div>
 
       {loading && <p className="text-gray-600">Chargement...</p>}
-      {error && <p className="text-red-500">Erreur: {error}</p>}
+      {error && (<Alert severity="error" sx={{ mb: 3 }}>
+                          <AlertTitle>Erreur</AlertTitle>
+                          {error}
+                        </Alert>
+                      )}
       {!loading && !error && responses.length > 0 ? (
         <div className="bg-white rounded-lg shadow overflow-x-auto w-full">
           <table className="min-w-full divide-y divide-gray-200">

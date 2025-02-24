@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Pencil, Trash2, CircleArrowLeft } from "lucide-react";
 import ResponseList from "./ResponseList";
 import EditQuestionForm from "./EditQuestionForm";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const QuestionList = ({ form, onBack }) => {
   const [questions, setQuestions] = useState([]);
@@ -99,7 +101,11 @@ const QuestionList = ({ form, onBack }) => {
           <p className="text-gray-600">{form.description}</p>
 
           {loading && <p className="text-gray-600">Chargement...</p>}
-          {error && <p className="text-red-500">Erreur: {error}</p>}
+          {error && (<Alert severity="error" sx={{ mb: 3 }}>
+                              <AlertTitle>Erreur</AlertTitle>
+                              {error}
+                            </Alert>
+                          )}
           {!loading && !error && (
             <div className="bg-white rounded-lg shadow overflow-x-auto w-full">
               <table className="min-w-full divide-y divide-gray-200">

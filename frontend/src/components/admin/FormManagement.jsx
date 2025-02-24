@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Pencil, Trash2, Lock } from "lucide-react";
 import QuestionList from "./QuestionList";
 import EditFormForm from "./EditFormForm";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 const FormManagement = () => {
   const [forms, setForms] = useState([]);
@@ -191,7 +193,11 @@ const FormManagement = () => {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold mb-4">Liste des Formulaires</h2>
           {loading && <p className="text-gray-600">Chargement...</p>}
-          {error && <p className="text-red-500">Erreur: {error}</p>}
+          {error && (<Alert severity="error" sx={{ mb: 3 }}>
+                              <AlertTitle>Erreur</AlertTitle>
+                              {error}
+                            </Alert>
+                          )}
           {!loading && !error && (
             <div className="bg-white rounded-lg shadow overflow-x-auto w-full">
               <table className="min-w-full divide-y divide-gray-200">
