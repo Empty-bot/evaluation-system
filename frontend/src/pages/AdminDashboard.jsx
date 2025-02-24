@@ -4,7 +4,7 @@ import FormManagement from '../components/admin/FormManagement';
 import UserManagement from '../components/admin/UserManagement';
 import Sidebar from '../components/admin/Sidebar';
 import NewUserForm from '../components/admin/NewUserForm';
-import Footer from '../components/Footer';
+import NewForm from '../components/admin/NewForm';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -18,6 +18,8 @@ const AdminDashboard = () => {
         return <NewUserForm />;
       case 'forms':
         return <FormManagement />;
+      case 'new-form':
+        return <NewForm />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -47,9 +49,6 @@ const AdminDashboard = () => {
           </main>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };

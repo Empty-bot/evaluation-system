@@ -201,7 +201,7 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
       </div>
     </form>
     {showConfirmPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <p className="text-lg mb-4">Êtes-vous sûr de vouloir effectuer ces modifications ?</p>
           <div className="flex justify-end space-x-4"> {/* Ajout de justify-end pour aligner les boutons à droite */}

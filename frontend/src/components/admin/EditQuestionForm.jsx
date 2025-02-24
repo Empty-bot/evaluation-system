@@ -185,7 +185,7 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
             <option value="">Sélectionnez un type</option>
             <option value="text">Réponse libre</option>
             <option value="multiple_choice">Choix multiples</option>
-            <option value="boolean">Question fermée (2 choix)</option>
+            <option value="boolean">Choix unique</option>
           </select>
         </div>
 
@@ -236,9 +236,9 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
                     possible_answers: [...prev.possible_answers, ""]
                   }));
                 }}
-                className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700"
+                className="px-2 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700"
               >
-                <Plus className="w-5 h-5"/>
+                <Plus className="w-4 h-4"/>
               </button>
             )}
           </div>
