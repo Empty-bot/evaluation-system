@@ -110,7 +110,7 @@ const QuestionList = ({ form, onBack }) => {
                               {error}
                             </Alert>
                           )}
-          {!loading && !error && (
+          {!loading && !error && questions.length > 0 ? (
             <div className="bg-white rounded-lg shadow overflow-x-auto w-full">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -149,6 +149,8 @@ const QuestionList = ({ form, onBack }) => {
                 </tbody>
               </table>
             </div>
+          ) : (
+            <Alert severity="info">Ce questionnaire ne contient pas de questions pour le moment.</Alert>
           )}
         </div>
       )}

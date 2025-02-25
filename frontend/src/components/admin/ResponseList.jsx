@@ -81,7 +81,7 @@ const ResponseList = ({ formTitle, question, onBack }) => {
           </table>
         </div>
       ) : (
-        <p className="text-gray-600">Aucune réponse pour cette question.</p>
+        <Alert severity="info">Aucune réponse pour cette question.</Alert>
       )}
     </div>
   );
