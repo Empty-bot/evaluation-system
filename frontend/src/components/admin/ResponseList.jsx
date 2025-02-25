@@ -50,7 +50,7 @@ const ResponseList = ({ formTitle, question, onBack }) => {
         </button>
         <h2 className="text-xl mb-4 font-semibold">{formTitle}</h2>
       </div>
-      <h2 className="text-lg mb-4 font-semibold">Réponses à : {question.label}</h2>
+      <h2 className="text-base mb-4 font-semibold">Réponses à : {question.label}</h2>
 
       {loading && (
       <div className="flex justify-center items-center min-h-[200px]">
