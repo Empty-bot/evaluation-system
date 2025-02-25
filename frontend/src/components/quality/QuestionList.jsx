@@ -62,8 +62,8 @@ const QuestionList = ({ form, onBack }) => {
             </button>
             <h2 className="text-xl mb-4 font-semibold">{form.title}</h2>
           </div>
-          <h2 className="text-base mb-4 font-semibold">Questions</h2>
-          <p className="text-gray-600">{form.description}</p>
+          <h2 className="text-lg mb-4 font-semibold">Questions</h2>
+          <p className="text-gray-600"><strong>{form.description}</strong></p>
 
           {loading && (
       <div className="flex justify-center items-center min-h-[200px]">
@@ -74,7 +74,7 @@ const QuestionList = ({ form, onBack }) => {
                               {error}
                             </Alert>
                           )}
-          {!loading && !error && (
+          {!loading && !error && questions.length > 0 ? (
             <div className="bg-white rounded-lg shadow overflow-x-auto w-full">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -107,6 +107,8 @@ const QuestionList = ({ form, onBack }) => {
                 </tbody>
               </table>
             </div>
+          ) : (
+            <Alert severity="info">Ce questionnaire ne contient pas de questions pour le moment.</Alert>
           )}
         </div>
   );
