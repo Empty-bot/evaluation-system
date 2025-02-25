@@ -7,7 +7,7 @@ const questionnaireController = {
     async getAll(req, res) {
         try {
             let questionnaires;
-            if (req.user.role === "admin") {
+            if (req.user.role === "admin" || req.user.role === "quality_manager") {
                 // L'admin voit tous les questionnaires
                 questionnaires = await Questionnaire.findAll();
             } else if (req.user.role === "student") {

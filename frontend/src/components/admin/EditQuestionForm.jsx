@@ -236,7 +236,7 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
                     possible_answers: [...prev.possible_answers, ""]
                   }));
                 }}
-                className="px-2 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700"
+                className="px-2 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
               >
                 <Plus className="w-4 h-4"/>
               </button>
