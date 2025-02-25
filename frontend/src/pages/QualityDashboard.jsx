@@ -35,7 +35,7 @@ const QualityDashboard = () => {
             >
               {isSidebarOpen ? <PanelRightOpen className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
             </button>
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Quality Manager Dashboard</h1>
             {renderMainContent()}
           </main>
         </div>
