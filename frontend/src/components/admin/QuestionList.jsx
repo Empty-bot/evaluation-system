@@ -98,8 +98,8 @@ const QuestionList = ({ form, onBack }) => {
             </button>
             <h2 className="text-xl mb-4 font-semibold">{form.title}</h2>
           </div>
-          <h2 className="text-base mb-4 font-semibold">Questions</h2>
-          <p className="text-gray-600">{form.description}</p>
+          <h2 className="text-lg mb-4 font-semibold">Questions</h2>
+          <p className="text-gray-600"><strong>{form.description}</strong></p>
 
           {loading && (
       <div className="flex justify-center items-center min-h-[200px]">
