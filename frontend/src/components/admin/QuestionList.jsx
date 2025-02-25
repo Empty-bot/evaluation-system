@@ -55,7 +55,7 @@ const QuestionList = ({ form, onBack }) => {
   };
 
   if (selectedQuestion) {
-    return <ResponseList question={selectedQuestion} onBack={() => setSelectedQuestion(null)} />;
+    return <ResponseList formTitle={form.title} question={selectedQuestion} onBack={() => setSelectedQuestion(null)} />;
   }
 
   return (

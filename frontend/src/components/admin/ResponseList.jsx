@@ -3,7 +3,7 @@ import { CircleArrowLeft } from "lucide-react";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
-const ResponseList = ({ question, onBack }) => {
+const ResponseList = ({ formTitle, question, onBack }) => {
   const [responses, setResponses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -48,8 +48,9 @@ const ResponseList = ({ question, onBack }) => {
         >
           <CircleArrowLeft className="w-5 h-5" />
         </button>
-        <h2 className="text-xl mb-4 font-semibold">Réponses à : {question.label}</h2>
+        <h2 className="text-xl mb-4 font-semibold">{formTitle}</h2>
       </div>
+      <h2 className="text-lg mb-4 font-semibold">Réponses à : {question.label}</h2>
 
       {loading && (
       <div className="flex justify-center items-center min-h-[200px]">
