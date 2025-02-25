@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PanelRightOpen, PanelLeftOpen } from 'lucide-react';
-import FormManagement from '../components/quality/FormManagement';
+import FormsList from '../components/quality/FormsList';
 import Sidebar from '../components/quality/Sidebar';
 
 const QualityDashboard = () => {
@@ -10,7 +10,7 @@ const QualityDashboard = () => {
   const renderMainContent = () => {
     switch (activeSection) {
       case 'forms':
-        return <FormManagement />;
+        return <FormsList />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
