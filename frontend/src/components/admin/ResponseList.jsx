@@ -22,9 +22,9 @@ const ResponseList = ({ question, onBack }) => {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des réponses");
-        }
+        //if (!response.ok) {
+          //throw new Error("Erreur lors de la récupération des réponses");
+        //}
 
         const data = await response.json();
         setResponses(data);
