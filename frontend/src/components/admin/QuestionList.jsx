@@ -96,7 +96,7 @@ const QuestionList = ({ form, onBack }) => {
             >
               <CircleArrowLeft className="w-5 h-5" />
             </button>
-            <h2 className="text-xl font-semibold">Questions : {form.title}</h2>
+            <h2 className="text-xl mb-4 font-semibold">Questions : {form.title}</h2>
           </div>
           <p className="text-gray-600">{form.description}</p>
 

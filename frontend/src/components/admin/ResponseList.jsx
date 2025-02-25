@@ -48,7 +48,7 @@ const ResponseList = ({ question, onBack }) => {
         >
           <CircleArrowLeft className="w-5 h-5" />
         </button>
-        <h2 className="text-xl font-semibold">Réponses à : {question.label}</h2>
+        <h2 className="text-xl mb-4 font-semibold">Réponses à : {question.label}</h2>
       </div>
 
       {loading && (
