@@ -13,6 +13,15 @@ const QuestionList = ({ form, onBack }) => {
   const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [showStatusError, setShowStatusError] = useState(false);
 
+  const translateType = (type) => {
+    const translations = {
+      'text': 'Texte',
+      'multiple_choice': 'Choix multiples',
+      'single_choice': 'Choix unique'
+    };
+    return translations[type] || type;
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       setLoading(true);
@@ -128,7 +137,7 @@ const QuestionList = ({ form, onBack }) => {
                       onClick={() => setSelectedQuestion(question)}
                     >
                       <td className="px-4 py-2 whitespace-nowrap">{question.label}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">{question.type}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">{question.type ? translateType(question.type) : ''}</td>
                       <td className="px-4 py-2 whitespace-nowrap">
                         <button 
                           onClick={(event) => handleEditClick(event, question)}

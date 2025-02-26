@@ -11,6 +11,15 @@ const FormsList = () => {
   const [error, setError] = useState(null);
   const [selectedForm, setSelectedForm] = useState(null);
 
+  const translateStatus = (status) => {
+    const translations = {
+      'draft': 'Brouillon',
+      'closed': 'Clôturé',
+      'published': 'Publié'
+    };
+    return translations[status] || status;
+  };
+
   const fetchForms = async () => {
     setLoading(true);
     setError(null);
@@ -78,7 +87,7 @@ const FormsList = () => {
               >
                 <td className="px-4 py-2 whitespace-nowrap">{form.title}</td>
                 <td className="px-4 py-2 whitespace-nowrap">{form.description}</td>
-                <td className="px-4 py-2 whitespace-nowrap">{form.status}</td>
+                <td className="px-4 py-2 whitespace-nowrap">{form.status ? translateStatus(form.status) : ''}</td>
                 <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                   <button
                     className="text-blue-600 hover:text-blue-900 p-1 rounded bg-transparent border-none" 

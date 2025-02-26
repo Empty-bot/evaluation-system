@@ -15,6 +15,15 @@ const FormManagement = () => {
   const [formToDelete, setFormToDelete] = useState(null);
   const [formToClose, setFormToClose] = useState(null);
 
+  const translateStatus = (status) => {
+    const translations = {
+      'draft': 'Brouillon',
+      'closed': 'Clôturé',
+      'published': 'Publié'
+    };
+    return translations[status] || status;
+  };
+
   const fetchForms = async () => {
     setLoading(true);
     setError(null);
@@ -217,7 +226,7 @@ const FormManagement = () => {
                     <tr key={form.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => setSelectedForm(form)}>
                       <td className="px-4 py-2 whitespace-nowrap">{form.title}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{form.description}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">{form.status}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">{form.status ? translateStatus(form.status) : ''}</td>
                       <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                         <button 
                           onClick={(event) => handleEditClick(event, form)} 

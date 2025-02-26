@@ -12,6 +12,16 @@ const UserManagement = () => {
   const [searchValue, setSearchValue] = useState("");
   const [editingUserId, setEditingUserId] = useState(null); // Nouvel état
   const [userToDelete, setUserToDelete] = useState(null);
+
+  const translateRole = (role) => {
+    const translations = {
+      'admin': 'Administrateur',
+      'quality_manager': 'Responsable Qualité',
+      'student': 'Étudiant',
+      'teacher': 'Enseignant'
+    };
+    return translations[role] || role;
+  };
   
   const baseUrl = "http://localhost:3001/api/users/"; // URL de base
   const fetchUsers = async () => {
@@ -202,7 +212,7 @@ const UserManagement = () => {
                       <td className="px-4 py-2 whitespace-nowrap">{user.first_name}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{user.surname}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{user.email}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">{user.role}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">{user.role ? translateRole(user.role) : ''}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{user.department}</td>
                       <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                         <button 
