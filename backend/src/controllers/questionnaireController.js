@@ -36,52 +36,81 @@ const questionnaireController = {
 
     async create(req, res) {
         try {
-            const { title, description, status, course_id } = req.body;
-            const questionnaireId = await Questionnaire.create({ title, description, status, course_id });
-
+          const { title, description, status, course_id } = req.body;
+          const questionnaireId = await Questionnaire.create({ title, description, status, course_id });
+          
+          // Envoyer des emails uniquement si le statut est "published"
+          if (status === 'published') {
             // Récupérer les étudiants inscrits au cours
             const students = await Users.findByCourse(course_id);
-
+            
             // Envoyer un email uniquement aux étudiants du cours
             students.forEach(student => {
-                sendEmail(
-                    student.email,
-                    `📚 Nouveau questionnaire disponible : ${title}`,
-                    `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre.`
-                );
+              sendEmail(
+                student.email,
+                `📚 Nouveau questionnaire disponible : ${title}`,
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre.`
+              );
             });
-
-            res.status(201).json({ message: "Questionnaire créé et notifications envoyées avec succès.", id: questionnaireId });
+            
+            res.status(201).json({ 
+              message: "Questionnaire créé et notifications envoyées avec succès.", 
+              id: questionnaireId 
+            });
+          } else {
+            // Si le statut n'est pas "published", ne pas envoyer d'emails
+            res.status(201).json({ 
+              message: "Questionnaire créé avec succès.", 
+              id: questionnaireId 
+            });
+          }
         } catch (error) {
-            res.status(500).json({ error: "Erreur lors de la création du questionnaire." });
+          res.status(500).json({ error: "Erreur lors de la création du questionnaire." });
         }
-    },
+      },
 
-    async update(req, res) {
+      async update(req, res) {
         try {
-            const { title, description, status, course_id } = req.body;
-            const { id } = req.params;
-    
-            // Vérifier si le questionnaire existe et récupérer son statut actuel
-            const questionnaire = await Questionnaire.findById(id);
-            if (!questionnaire) {
-                return res.status(404).json({ error: "Questionnaire non trouvé." });
-            }
-    
-            // Empêcher la modification des questionnaires publiés ou clôturés
-            if (questionnaire.status !== "draft") {
-                return res.status(403).json({ error: "Impossible de modifier un questionnaire publié ou clôturé." });
-            }
-    
-            // Mise à jour du questionnaire
-            const updated = await Questionnaire.update(id, { title, description, status, course_id });
+          const { title, description, status, course_id } = req.body;
+          const { id } = req.params;
+          
+          // Vérifier si le questionnaire existe et récupérer son statut actuel
+          const questionnaire = await Questionnaire.findById(id);
+          if (!questionnaire) {
+            return res.status(404).json({ error: "Questionnaire non trouvé." });
+          }
+          
+          // Empêcher la modification des questionnaires publiés ou clôturés
+          if (questionnaire.status !== "draft") {
+            return res.status(403).json({ error: "Impossible de modifier un questionnaire publié ou clôturé." });
+          }
+          
+          // Mise à jour du questionnaire
+          const updated = await Questionnaire.update(id, { title, description, status, course_id });
+          
+          // Vérifier si le statut est passé à "published"
+          if (status === 'published' && questionnaire.status !== 'published') {
+            // Récupérer les étudiants inscrits au cours
+            const students = await Users.findByCourse(course_id);
+            
+            // Envoyer un email uniquement aux étudiants du cours
+            students.forEach(student => {
+              sendEmail(
+                student.email,
+                `📚 Nouveau questionnaire disponible : ${title}`,
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre.`
+              );
+            });
+            
+            res.json({ message: "Questionnaire mis à jour et notifications envoyées avec succès." });
+          } else {
             res.json({ message: "Questionnaire mis à jour avec succès." });
-    
+          }
         } catch (error) {
-            console.error("❌ Erreur lors de la mise à jour du questionnaire :", error);
-            res.status(500).json({ error: "Erreur lors de la mise à jour du questionnaire." });
+          console.error("❌ Erreur lors de la mise à jour du questionnaire :", error);
+          res.status(500).json({ error: "Erreur lors de la mise à jour du questionnaire." });
         }
-    },
+      },
 
     async delete(req, res) {
         try {
