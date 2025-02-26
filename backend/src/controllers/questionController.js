@@ -28,7 +28,7 @@ const questionController = {
             const { questionnaire_id, label, type, possible_answers } = req.body;
     
             // Validation du type et des possible_answers
-            if (!["text", "multiple_choice", "boolean"].includes(type)) {
+            if (!["text", "multiple_choice", "single_choice"].includes(type)) {
                 return res.status(400).json({ error: "Type de question invalide" });
             }
     
@@ -53,7 +53,6 @@ const questionController = {
                 }
             } 
             else if (type === "single_choice") {
-                // Pour boolean, exactement 2 valeurs personnalisées
                 if (!Array.isArray(possible_answers) || possible_answers.length < 2) {
                     return res.status(400).json({ 
                         error: "Les questions à choix unique nécessitent au moins 2 réponses possibles" 
