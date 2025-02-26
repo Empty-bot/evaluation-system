@@ -17,7 +17,7 @@ class Questionnaire {
             `SELECT q.* FROM questionnaires q
              JOIN courses c ON q.course_id = c.id
              JOIN enrollments e ON c.id = e.course_id
-             WHERE e.user_id = ?`,
+             WHERE e.user_id = ? AND q.status = 'published'`,
             [user_id]
         );
         return rows;
