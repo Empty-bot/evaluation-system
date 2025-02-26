@@ -11,7 +11,7 @@ const responseController = {
         try {
             const { questionnaire_id, question_id, answer } = req.body;
             const user_id = req.user.userId;
-
+    
             // Vérifier si le questionnaire est toujours ouvert
             const questionnaire = await Questionnaire.findById(questionnaire_id);
             if (!questionnaire) {
@@ -20,7 +20,7 @@ const responseController = {
             if (questionnaire.status === "closed") {
                 return res.status(403).json({ error: "Ce questionnaire est clôturé et ne peut plus être rempli." });
             }
-
+    
             // Vérifier si l'étudiant est inscrit au cours du questionnaire
             const isEnrolled = await Questionnaire.isStudentEnrolled(user_id, questionnaire_id);
             if (!isEnrolled) {
@@ -33,6 +33,19 @@ const responseController = {
                 return res.status(400).json({ error: "La question spécifiée n'existe pas." });
             }
     
+            // Obtenir les possibles réponses sous forme de tableau
+            let possibleAnswers = question.possible_answers;
+            if (typeof possibleAnswers === 'string') {
+                try {
+                    possibleAnswers = JSON.parse(possibleAnswers);
+                } catch (error) {
+                    console.error("Erreur lors du parsing des réponses possibles:", error);
+                    return res.status(500).json({ 
+                        error: "Erreur lors de la validation de la réponse." 
+                    });
+                }
+            }
+    
             // Validation selon le type de question
             if (question.type === 'text') {
                 // Pour le type texte, on vérifie juste que la réponse n'est pas vide
@@ -41,47 +54,39 @@ const responseController = {
                         error: "La réponse ne peut pas être vide pour une question de type texte." 
                     });
                 }
-            } else {
-                // Pour les types boolean et multiple_choice
-                let possibleAnswers = question.possible_answers;
-
-                // Vérifier si c'est une chaîne JSON et la convertir si nécessaire
-                if (typeof possibleAnswers === 'string') {
-                    try {
-                        possibleAnswers = JSON.parse(possibleAnswers);
-                    } catch (error) {
-                        console.error("Erreur lors du parsing des réponses possibles:", error);
-                        return res.status(500).json({ 
-                            error: "Erreur lors de la validation de la réponse." 
-                        });
-                    }
+            } else if (question.type === 'single_choice') {
+                // Gestion du type single_choice 
+                if (!Array.isArray(possibleAnswers) || possibleAnswers.length < 2) {
+                    return res.status(500).json({ 
+                        error: "Configuration invalide pour une question à choix unique." 
+                    });
                 }
-
-                // Validation selon le type spécifique
-                if (question.type === 'boolean') {
-                    // Pour le type boolean, on doit avoir exactement 2 options et la réponse doit être l'une d'entre elles
-                    if (!Array.isArray(possibleAnswers) || possibleAnswers.length !== 2) {
-                        return res.status(500).json({ 
-                            error: "Configuration invalide pour une question booléenne." 
-                        });
-                    }
-                    
-                    if (!possibleAnswers.includes(answer)) {
+                
+                if (!possibleAnswers.includes(answer)) {
+                    return res.status(400).json({ 
+                        error: `Réponse invalide. Les options possibles sont : ${possibleAnswers.join(", ")}` 
+                    });
+                }
+            } else if (question.type === 'multiple_choice') {
+                // Gérer un tableau de réponses pour multiple_choice
+                if (!Array.isArray(possibleAnswers) || possibleAnswers.length < 2) {
+                    return res.status(500).json({ 
+                        error: "Configuration invalide pour une question à choix multiples." 
+                    });
+                }
+    
+                // Vérifier si answer est un tableau
+                if (!Array.isArray(answer)) {
+                    return res.status(400).json({
+                        error: "Les réponses pour une question à choix multiples doivent être envoyées sous forme de tableau."
+                    });
+                }
+    
+                // Vérifier que chaque réponse est valide
+                for (const singleAnswer of answer) {
+                    if (!possibleAnswers.includes(singleAnswer)) {
                         return res.status(400).json({ 
-                            error: `Réponse invalide. Les options possibles sont : ${possibleAnswers.join(" ou ")}` 
-                        });
-                    }
-                } else if (question.type === 'multiple_choice') {
-                    // Pour le type multiple_choice, la réponse doit être l'une des options disponibles
-                    if (!Array.isArray(possibleAnswers) || possibleAnswers.length < 2) {
-                        return res.status(500).json({ 
-                            error: "Configuration invalide pour une question à choix multiples." 
-                        });
-                    }
-
-                    if (!possibleAnswers.includes(answer)) {
-                        return res.status(400).json({ 
-                            error: `Réponse invalide. Options valides : ${possibleAnswers.join(", ")}` 
+                            error: `Réponse invalide: "${singleAnswer}". Options valides : ${possibleAnswers.join(", ")}` 
                         });
                     }
                 }
@@ -91,30 +96,44 @@ const responseController = {
             const anonymous_id = crypto.createHash("sha256")
                 .update(`${user_id}-${questionnaire_id}-${SALT_SECRET}`)
                 .digest("hex");
-
+    
             // Vérifier si l'étudiant a déjà répondu à cette question
             const alreadyAnswered = await Response.hasAlreadyAnswered(anonymous_id, question_id);
             if (alreadyAnswered) {
                 return res.status(400).json({ error: "Vous avez déjà répondu à cette question." });
             }
-
-
-            //Logs pour vérification
+    
+            // Logs pour vérification
             console.log("🔍 Debug - questionnaire_id:", questionnaire_id);
             console.log("🔍 Debug - question_id:", question_id);
             console.log("🔍 Debug - answer:", answer);
             console.log("🔍 Debug - user_id:", req.user.userId);
             console.log("🔍 Debug - anonymous_id:", anonymous_id);
-            console.log("🔍 Debug - Generated anonymous_id:", anonymous_id);
-
-
     
-            const responseId = await Response.create({ anonymous_id, questionnaire_id, question_id, answer });
-
-            // Récupérer les emails des admins
+            let responseId;
+            
+            // Gestion spéciale pour les réponses multiples
+            if (question.type === 'multiple_choice' && Array.isArray(answer)) {
+                // Convertir le tableau en JSON et le stocker
+                const answerString = JSON.stringify(answer);
+                responseId = await Response.create({ 
+                    anonymous_id, 
+                    questionnaire_id, 
+                    question_id, 
+                    answer: answerString 
+                });
+            } else {
+                // Pour les questions non-multiple_choice, comportement normal
+                responseId = await Response.create({ 
+                    anonymous_id, 
+                    questionnaire_id, 
+                    question_id, 
+                    answer 
+                });
+            }
+    
+            // Récupérer les emails des admins et envoyer notifications
             const admins = await Users.findByRole("admin");
-
-            // Envoyer un email aux admins
             admins.forEach(admin => {
                 sendEmail(
                     admin.email,
@@ -122,7 +141,7 @@ const responseController = {
                     `Un étudiant a répondu à un questionnaire. Connectez-vous pour voir les résultats.`
                 );
             });
-
+    
             res.status(201).json({ message: "Réponse soumise avec succès.", id: responseId });
     
         } catch (error) {
