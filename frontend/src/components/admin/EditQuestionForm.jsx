@@ -49,7 +49,8 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
     setFormData(prev => ({
       ...prev,
       type: newType,
-      possible_answers: newType === 'text' ? [] : newType === 'boolean' ? ["", ""] : ["", ""]
+      // Initialisation de possibles réponses selon le type
+      possible_answers: newType === 'text' ? [] : ["", ""]
     }));
   };
 
@@ -77,16 +78,10 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
   
       let validatedAnswers = [];
       
-      if (formData.type === "multiple_choice") {
+      if (formData.type === "multiple_choice" || formData.type === "single_choice") {
         validatedAnswers = formData.possible_answers.filter(answer => answer.trim());
         if (validatedAnswers.length < 2) {
-          throw new Error("Au moins deux réponses valides sont requises pour une question à choix multiples");
-        }
-      } 
-      else if (formData.type === "boolean") {
-        validatedAnswers = formData.possible_answers.filter(answer => answer.trim());
-        if (validatedAnswers.length !== 2) {
-          throw new Error("Exactement deux réponses sont requises pour une question fermée");
+          throw new Error(`Au moins deux réponses valides sont requises pour une question à ${formData.type === "single_choice" ? "choix unique" : "choix multiples"}`);
         }
       }
   
@@ -185,7 +180,7 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
             <option value="">Sélectionnez un type</option>
             <option value="text">Réponse libre</option>
             <option value="multiple_choice">Choix multiples</option>
-            <option value="boolean">Choix unique</option>
+            <option value="single_choice">Choix unique</option>
           </select>
         </div>
 
@@ -193,7 +188,7 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
         {formData.type !== 'text' && (
           <div className="space-y-4">
             <label className="block text-sm font-medium">
-              {formData.type === 'boolean' ? 'Options de réponse' : 'Réponses possibles'}
+              Réponses possibles
             </label>
             
             <div className="space-y-3">
@@ -204,14 +199,12 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
                     value={answer}
                     onChange={e => handleAnswerChange(index, e.target.value)}
                     className="flex-1 border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder={formData.type === 'boolean' ? 
-                      `Option ${index + 1}` : 
-                      `Réponse ${index + 1}`
-                    }
+                    placeholder={`Option ${index + 1}`}
                     required
                   />
                   
-                  {formData.type === 'multiple_choice' && formData.possible_answers.length > 2 && (
+                  {/* Afficher le bouton de suppression si plus de 2 options */}
+                  {formData.possible_answers.length > 2 && (
                     <button
                       type="button"
                       onClick={() => {
@@ -227,20 +220,19 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
               ))}
             </div>
 
-            {formData.type === 'multiple_choice' && (
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData(prev => ({
-                    ...prev,
-                    possible_answers: [...prev.possible_answers, ""]
-                  }));
-                }}
-                className="px-2 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                <Plus className="w-4 h-4"/>
-              </button>
-            )}
+            {/* Bouton pour ajouter des options pour single_choice et multiple_choice */}
+            <button
+              type="button"
+              onClick={() => {
+                setFormData(prev => ({
+                  ...prev,
+                  possible_answers: [...prev.possible_answers, ""]
+                }));
+              }}
+              className="px-2 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              <Plus className="w-4 h-4"/>
+            </button>
           </div>
         )}
 
@@ -263,33 +255,33 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
       </form>
 
       {/* Popup de confirmation */}
-    {showConfirmation && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg max-w-md w-full">
-        <h3 className="text-lg font-medium mb-4">Confirmer les modifications ?</h3>
-        <div className="flex gap-4 justify-end">
-            <button
-            onClick={() => setShowConfirmation(false)}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-            disabled={loading}
-            >
-            Annuler
-            </button>
-            <button
-            onClick={submitForm}
-            disabled={loading}
-            className={`px-4 py-2 text-white rounded-lg ${
-                loading 
-                ? "bg-blue-400 cursor-not-allowed" 
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-            >
-            {loading ? "Modification en cours..." : "Confirmer"}
-            </button>
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+            <h3 className="text-lg font-medium mb-4">Confirmer les modifications ?</h3>
+            <div className="flex gap-4 justify-end">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                disabled={loading}
+              >
+                Annuler
+              </button>
+              <button
+                onClick={submitForm}
+                disabled={loading}
+                className={`px-4 py-2 text-white rounded-lg ${
+                  loading 
+                  ? "bg-blue-400 cursor-not-allowed" 
+                  : "bg-blue-600 hover:bg-blue-700"
+                }`}
+              >
+                {loading ? "Modification en cours..." : "Confirmer"}
+              </button>
+            </div>
+          </div>
         </div>
-        </div>
-    </div>
-    )}
+      )}
     </div>
   );
 }
