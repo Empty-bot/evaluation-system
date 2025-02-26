@@ -19,7 +19,7 @@ const NewForm = () => {
 
   const questionTypes = [
     { value: 'multiple_choice', label: 'Choix multiples' },
-    { value: 'boolean', label: 'Choix unique' },
+    { value: 'single_choice', label: 'Choix unique' },
     { value: 'text', label: 'Question ouverte' }
   ];
 
@@ -30,7 +30,7 @@ const NewForm = () => {
 
   useEffect(() => {
     const hasError = questions.some(question => 
-      (question.type === 'multiple_choice' || question.type === 'boolean') && 
+      (question.type === 'multiple_choice' || question.type === 'single_choice') && 
       checkDuplicateOptions(question.possible_answers)
     );
     setHasValidationError(hasError);
@@ -52,14 +52,7 @@ const NewForm = () => {
   const handleQuestionChange = (index, field, value) => {
     const newQuestions = [...questions];
     if (field === 'type') {
-      if (value === 'boolean') {
-        newQuestions[index] = {
-          ...newQuestions[index],
-          type: value,
-          possible_answers: ['Option n° 1', 'Option n° 2'],
-          hasError: false
-        };
-      } else if (value === 'multiple_choice') {
+      if (value === 'single_choice' || value === 'multiple_choice') {
         newQuestions[index] = {
           ...newQuestions[index],
           type: value,
@@ -234,7 +227,7 @@ const NewForm = () => {
             ))}
           </select>
 
-          {(question.type === 'multiple_choice' || question.type === 'boolean') && (
+          {(question.type === 'multiple_choice' || question.type === 'single_choice') && (
             <div className="mb-4">
               {question.possible_answers.map((option, optionIndex) => (
                 <div key={optionIndex} className="mb-2 flex items-center gap-2">
@@ -248,7 +241,7 @@ const NewForm = () => {
                     }}
                     className={`w-full mb-2 border font-semibold bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${question.hasError ? 'border-red-500' : ''}`}
                   />
-                  {question.possible_answers.length > 1 && question.type === 'multiple_choice' && (
+                  {question.possible_answers.length > 1 && (
                     <button
                       onClick={() => handleRemoveOption(index, optionIndex)}
                       className="text-red-500 bg-white hover:text-red-700"
@@ -263,14 +256,12 @@ const NewForm = () => {
                   Les options doivent être uniques
                 </p>
               )}
-              {question.type === 'multiple_choice' && (
-                <button
-                  onClick={() => handleAddOption(index)}
-                  className="px-2 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-                >
-                  <Plus className="w-4 h-4"/>
-                </button>
-              )}
+              <button
+                onClick={() => handleAddOption(index)}
+                className="px-2 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                <Plus className="w-4 h-4"/>
+              </button>
             </div>
           )}
 
