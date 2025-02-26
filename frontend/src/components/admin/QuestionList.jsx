@@ -12,6 +12,7 @@ const QuestionList = ({ form, onBack }) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [showStatusError, setShowStatusError] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
 
   const translateType = (type) => {
     const translations = {
@@ -63,6 +64,33 @@ const QuestionList = ({ form, onBack }) => {
     }
   };
 
+  const confirmDeleteQuestion = (event, question) => {
+    event.stopPropagation();
+    setQuestionToDelete(question); // Stocke la question à supprimer
+  };
+
+  const deleteQuestion = async () => {
+    if (!questionToDelete) return;
+  
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:3001/api/questions/${questionToDelete.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de la question.");
+      }
+  
+      // Rafraîchir la liste des utilisateurs après suppression
+      setQuestions(questions.filter(question => question.id !== questionToDelete.id));
+      setQuestionToDelete(null); // Ferme le popup
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (selectedQuestion) {
     return <ResponseList formTitle={form.title} question={selectedQuestion} onBack={() => setSelectedQuestion(null)} />;
   }
@@ -87,6 +115,30 @@ const QuestionList = ({ form, onBack }) => {
           </div>
         </div>
       )}
+
+      {questionToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg mb-4">
+                Êtes-vous sûr de vouloir supprimer cette question ?
+            </p>
+            <div className="flex justify-end space-x-4">
+                <button 
+                onClick={deleteQuestion} 
+                className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg"
+                >
+                Oui, supprimer
+                </button>
+                <button 
+                onClick={() => setQuestionToDelete(null)} 
+                className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg"
+                >
+                Annuler
+                </button>
+            </div>
+            </div>
+        </div>
+       )}
 
       {/* Affichage du formulaire de modification si une question est en édition */}
       {editingQuestionId ? (
@@ -147,6 +199,7 @@ const QuestionList = ({ form, onBack }) => {
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button 
+                          onClick={(event) => confirmDeleteQuestion(event, question)}
                           className="text-red-600 hover:text-red-900 p-1 rounded bg-transparent border-none ml-2" 
                           title="Supprimer"
                         >
