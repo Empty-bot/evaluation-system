@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS questions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     questionnaire_id INT NOT NULL,
     label TEXT NOT NULL,
-    type ENUM('text', 'multiple_choice', 'boolean') NOT NULL,
+    type ENUM('text', 'multiple_choice', 'single_choice') NOT NULL,
     possible_answers JSON NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id) ON DELETE CASCADE

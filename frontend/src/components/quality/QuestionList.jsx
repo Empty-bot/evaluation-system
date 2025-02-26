@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Pencil, Trash2, CircleArrowLeft } from "lucide-react";
+import { CircleArrowLeft } from "lucide-react";
 import ResponseList from "./ResponseList";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
