@@ -52,15 +52,20 @@ const questionController = {
                     });
                 }
             } 
-            else if (type === "boolean") {
+            else if (type === "single_choice") {
                 // Pour boolean, exactement 2 valeurs personnalisées
-                if (!Array.isArray(possible_answers) || possible_answers.length !== 2 || 
-                    !possible_answers[0].trim() || !possible_answers[1].trim()) {
+                if (!Array.isArray(possible_answers) || possible_answers.length < 2) {
                     return res.status(400).json({ 
-                        error: "Les questions booléennes nécessitent exactement 2 réponses valides" 
+                        error: "Les questions à choix unique nécessitent au moins 2 réponses possibles" 
                     });
                 }
                 validatedAnswers = possible_answers.map(answer => answer.trim());
+
+                if (validatedAnswers.length < 2) {
+                    return res.status(400).json({ 
+                        error: "Les questions à choix unique nécessitent au moins 2 réponses valides" 
+                    });
+                }
             }
     
             const questionId = await Question.create({ 
@@ -84,7 +89,7 @@ const questionController = {
             const { label, type, possible_answers } = req.body;
     
             // Validation du type
-            if (!["text", "multiple_choice", "boolean"].includes(type)) {
+            if (!["text", "multiple_choice", "single_choice"].includes(type)) {
                 return res.status(400).json({ error: "Type de question invalide" });
             }
     
@@ -108,14 +113,19 @@ const questionController = {
                     });
                 }
             } 
-            else if (type === "boolean") {
-                if (!Array.isArray(possible_answers) || possible_answers.length !== 2 || 
-                    !possible_answers[0].trim() || !possible_answers[1].trim()) {
+            else if (type === "single_choice") {
+                if (!Array.isArray(possible_answers) || possible_answers.length < 2) {
                     return res.status(400).json({ 
-                        error: "Les questions booléennes nécessitent exactement 2 réponses valides" 
+                        error: "Les questions à choix unique nécessitent au moins 2 réponses possibles" 
                     });
                 }
                 validatedAnswers = possible_answers.map(answer => answer.trim());
+
+                if (validatedAnswers.length < 2) {
+                    return res.status(400).json({ 
+                        error: "Les questions à choix unique nécessitent au moins 2 réponses valides" 
+                    });
+                }
             }
     
             const updated = await Question.update(req.params.id, { 
