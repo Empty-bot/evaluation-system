@@ -130,7 +130,7 @@ const FormFillOut = ({ form, onBack }) => {
     setConfirmationOpen(false);
   };
 
-  // Envoi des réponses au serveur
+  // Envoi des réponses au serveur en utilisant submitFullQuestionnaire
   const handleSubmit = async () => {
     setSubmitLoading(true);
     setSubmitError(null);
@@ -139,13 +139,28 @@ const FormFillOut = ({ form, onBack }) => {
     try {
       const token = localStorage.getItem("token");
       
-      // Pour chaque question, envoyer une réponse
-      for (const question of questions) {
-        let answer = answers[question.id];
-        
-        // Aucun traitement spécial pour multiple_choice - on envoie le tableau directement
-        
-        await submitSingleAnswer(token, form.id, question.id, answer);
+      // Préparer le tableau de réponses
+      const responsesArray = questions.map(question => ({
+        question_id: question.id,
+        answer: answers[question.id]
+      }));
+      
+      // Envoi de toutes les réponses en une seule requête
+      const response = await fetch("http://localhost:3001/api/responses/submitFullQuestionnaire", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          questionnaire_id: form.id,
+          responses: responsesArray
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erreur lors de l'envoi des réponses");
       }
       
       setSubmitSuccess(true);
@@ -163,29 +178,6 @@ const FormFillOut = ({ form, onBack }) => {
     } finally {
       setSubmitLoading(false);
     }
-  };
-  
-  // Fonction d'envoi d'une réponse unique
-  const submitSingleAnswer = async (token, questionnaireId, questionId, answer) => {
-    const response = await fetch("http://localhost:3001/api/responses/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        questionnaire_id: questionnaireId,
-        question_id: questionId,
-        answer: answer,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Erreur lors de l'envoi des réponses");
-    }
-    
-    return await response.json();
   };
 
   // Rendu du type de champ en fonction du type de question
