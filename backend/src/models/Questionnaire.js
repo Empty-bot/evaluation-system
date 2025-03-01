@@ -62,6 +62,14 @@ class Questionnaire {
         );
         return result.affectedRows > 0;
     }
+
+    static async publishUpdate(id) {
+        const [result] = await pool.execute(
+            'UPDATE questionnaires SET status = ? WHERE id = ?',
+            ['published', id]
+        );
+        return result.affectedRows > 0;
+    }
 }
 
 module.exports = Questionnaire;
