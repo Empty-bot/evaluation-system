@@ -26,6 +26,11 @@ const questionController = {
     async create(req, res) {
         try {
             const { questionnaire_id, label, type, possible_answers } = req.body;
+
+            // Vérification que label n'est pas vide
+            if (!label || label.trim() === "") {
+                return res.status(400).json({ error: "Un libellé de question est requis et ne peut pas être vide." });
+            }
     
             // Validation du type et des possible_answers
             if (!["text", "multiple_choice", "single_choice"].includes(type)) {
@@ -86,6 +91,11 @@ const questionController = {
     async update(req, res) {
         try {
             const { label, type, possible_answers } = req.body;
+
+            // Vérification que label n'est pas vide
+            if (!label || label.trim() === "") {
+                return res.status(400).json({ error: "Un libellé de question est requis et ne peut pas être vide." });
+            }
     
             // Validation du type
             if (!["text", "multiple_choice", "single_choice"].includes(type)) {
