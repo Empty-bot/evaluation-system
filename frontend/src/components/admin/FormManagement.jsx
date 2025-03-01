@@ -218,6 +218,7 @@ const FormManagement = () => {
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Délai</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
@@ -227,6 +228,7 @@ const FormManagement = () => {
                       <td className="px-4 py-2 whitespace-nowrap">{form.title}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{form.description}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{form.status ? translateStatus(form.status) : ''}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">{form.deadline}</td>
                       <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                         <button 
                           onClick={(event) => handleEditClick(event, form)} 
