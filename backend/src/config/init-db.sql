@@ -98,3 +98,6 @@ ADD surname VARCHAR(50) NOT NULL;
 
 ALTER TABLE questionnaires
 ADD deadline DATETIME;
+
+ALTER TABLE courses MODIFY COLUMN department ENUM('DSTI', 'DGAE', 'DGO', 'DU2ADT', 'DST2AN') NOT NULL;
+ALTER TABLE courses ADD COLUMN level ENUM('Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2') NOT NULL;

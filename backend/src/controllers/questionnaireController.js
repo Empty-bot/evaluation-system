@@ -1,5 +1,4 @@
 const Questionnaire = require('../models/Questionnaire');
-const Enrollment = require("../models/Enrollment");
 const sendEmail = require("../config/mailer");
 const Users = require("../models/Users");
 
@@ -31,6 +30,48 @@ const questionnaireController = {
             res.json(questionnaire);
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération du questionnaire." });
+        }
+    },
+
+    async getByDepartment(req, res) {
+        try {
+            const { department } = req.params;
+    
+            // Valider que le département est fourni
+            if (!department) {
+                return res.status(400).json({ error: "Le département est requis." });
+            }
+    
+            const questionnaires = await Questionnaire.findByDepartment(department);
+    
+            if (!questionnaires || questionnaires.length === 0) {
+                return res.status(404).json({ error: "Aucun questionnaire trouvé pour ce département." });
+            }
+
+            res.json(questionnaires);
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
+        }
+    },
+
+    async getByDepartmentAndLevel(req, res) {
+        try {
+            const { department, level } = req.params;
+    
+            if (!department || !level) {
+                return res.status(400).json({ error: "Le département et le niveau sont requis." });
+            }
+            console.log(department, level)
+            const questionnaires = await Questionnaire.findByDepartmentAndLevel(department, level);
+    
+            if (!questionnaires || questionnaires.length === 0) {
+                return res.status(404).json({ error: "Aucun questionnaire trouvé pour ce département et ce niveau." });
+            }
+    
+            res.json(questionnaires);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
         }
     },
 

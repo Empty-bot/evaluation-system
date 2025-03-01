@@ -23,6 +23,30 @@ class Questionnaire {
         return rows;
     }
 
+    static async findByDepartment(department) {
+        const [rows] = await pool.execute(
+            `SELECT q.*
+             FROM questionnaires q
+             JOIN courses c ON q.course_id = c.id
+             WHERE c.department = ?`,
+            [department]
+        );
+        return rows;
+    }
+
+    static async findByDepartmentAndLevel(department, level) {
+        console.log("Query parameters:", { department, level });
+        const [rows] = await pool.execute(
+            `SELECT q.*
+             FROM questionnaires q
+             JOIN courses c ON q.course_id = c.id
+             WHERE c.department = ?
+             AND c.level = ?`,
+            [department, level]
+        );
+        return rows;
+    }
+
     static async create({ title, description, status, course_id, deadline }) {
         const [result] = await pool.execute(
             'INSERT INTO questionnaires (title, description, status, course_id, deadline) VALUES (?, ?, ?, ?, ?)',
