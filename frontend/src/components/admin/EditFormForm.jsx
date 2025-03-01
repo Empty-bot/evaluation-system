@@ -9,6 +9,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
     description: "",
     status: "",
     course_id: "",
+    deadline: "", // Ajout du champ deadline
   });
 
   const [loading, setLoading] = useState(false);
@@ -40,12 +41,21 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
           return;
         }
 
+        // Formatage de la date pour l'input datetime-local
+        let formattedDeadline = "";
+        if (form.deadline) {
+          // Convertir la date en format YYYY-MM-DDTHH:MM
+          const deadlineDate = new Date(form.deadline);
+          formattedDeadline = deadlineDate.toISOString().slice(0, 16);
+        }
+
         setOriginalTitle(form.title);
         setFormData({
           title: form.title,
           description: form.description,
           status: form.status,
           course_id: form.course_id || "",
+          deadline: formattedDeadline,
         });
       } catch (err) {
         setError(err.message);
@@ -82,6 +92,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
           description: formData.description,
           status: formData.status,
           course_id: formData.course_id,
+          deadline: formData.deadline || null, // Envoi de null si aucune date n'est spécifiée
         }),
       });
 
@@ -144,6 +155,17 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Cours</label>
             <input type="text" value={formData.course_id} onChange={(e) => setFormData({ ...formData, course_id: e.target.value })} required className="border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Délai</label>
+            <input 
+              type="datetime-local" 
+              value={formData.deadline} 
+              onChange={(e) => setFormData({ ...formData, deadline: e.target.value })} 
+              className="border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-sm text-gray-500 mt-1">Laissez vide si aucun délai n'est prévu</p>
           </div>
 
           <div className="flex space-x-4">
