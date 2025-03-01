@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Pencil, Trash2, Lock } from "lucide-react";
+import { Pencil, Trash2, Lock, BookCheck } from "lucide-react";
 import QuestionList from "./QuestionList";
 import EditFormForm from "./EditFormForm";
 import Alert from '@mui/material/Alert';
@@ -11,9 +11,9 @@ const FormManagement = () => {
   const [error, setError] = useState(null);
   const [selectedForm, setSelectedForm] = useState(null);
   const [editingFormId, setEditingFormId] = useState(null);
-  const [showStatusError, setShowStatusError] = useState(false);
   const [formToDelete, setFormToDelete] = useState(null);
   const [formToClose, setFormToClose] = useState(null);
+  const [formToPublish, setFormToPublish] = useState(null);
 
   const translateStatus = (status) => {
     const translations = {
@@ -56,11 +56,7 @@ const FormManagement = () => {
 
   const handleEditClick = (event, form) => {
     event.stopPropagation();
-    if (form.status === "draft") {
-      setEditingFormId(form.id);
-    } else {
-      setShowStatusError(true);
-    }
+    setEditingFormId(form.id);
   };
 
   const handleDeleteClick = (event, form) => {
@@ -119,30 +115,41 @@ const FormManagement = () => {
     }
   };
 
+  const handlePublishClick = (event, form) => {
+    event.stopPropagation();
+    setFormToPublish(form);
+  };
+
+  const confirmPublishForm = async () => {
+    if (!formToPublish) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:3001/api/questionnaires/${formToPublish.id}/publish`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la publication du questionnaire.");
+      }
+
+      setForms(forms.map(f => (f.id === formToPublish.id ? { ...f, status: "published" } : f)));
+      setFormToPublish(null);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+
   if (selectedForm) {
     return <QuestionList form={selectedForm} onBack={() => setSelectedForm(null)} />;
   }
 
   return (
     <div className="space-y-4">
-      {/* Popup d'erreur si le questionnaire est publié ou clôturé */}
-      {showStatusError && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg mb-4 text-center text-red-600">
-              Impossible de modifier un questionnaire publié ou clôturé.
-            </p>
-            <div className="flex justify-center">
-              <button 
-                onClick={() => setShowStatusError(false)} 
-                className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg"
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Popup de confirmation de suppression */}
       {formToDelete && (
@@ -196,6 +203,31 @@ const FormManagement = () => {
         </div>
       )}
 
+      {formToPublish && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg mb-4 text-center">
+              Êtes-vous sûr de vouloir <strong>publier</strong> le questionnaire <strong>{formToPublish.title}</strong> ?
+              Une fois publié, il ne pourra plus être modifié.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button 
+                onClick={confirmPublishForm} 
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+              >
+                Oui, publier
+              </button>
+              <button 
+                onClick={() => setFormToPublish(null)} 
+                className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {editingFormId ? (
         <EditFormForm formId={editingFormId} onCancel={() => setEditingFormId(null)} onUpdateForm={fetchForms} />
       ) : (
@@ -230,6 +262,7 @@ const FormManagement = () => {
                       <td className="px-4 py-2 whitespace-nowrap">{form.status ? translateStatus(form.status) : ''}</td>
                       <td className="px-4 py-2 whitespace-nowrap">{form.deadline}</td>
                       <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
+                        {form.status === "draft" && (
                         <button 
                           onClick={(event) => handleEditClick(event, form)} 
                           className="text-blue-600 hover:text-blue-900 p-1 rounded bg-transparent border-none" 
@@ -237,6 +270,7 @@ const FormManagement = () => {
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
+                        )}
                         <button 
                           onClick={(event) => handleDeleteClick(event, form)} 
                           className="text-red-600 hover:text-red-900 p-1 rounded bg-transparent border-none" 
@@ -252,6 +286,15 @@ const FormManagement = () => {
                           >
                             <Lock className="w-4 h-4" />
                           </button>
+                        )}
+                        {form.status === "draft" && (
+                          <button 
+                            onClick={(event) => handlePublishClick(event, form)} 
+                            className="text-gray-600 hover:text-gray-900 p-1 rounded bg-transparent border-none" 
+                            title="Publier"
+                          >
+                            <BookCheck className="w-4 h-4" />
+                        </button>
                         )}
                       </td>
                     </tr>
