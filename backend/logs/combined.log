@@ -2787,3 +2787,7 @@
 {"level":"info","message":"POST /api/auth/verify-password - ::ffff:127.0.0.1"}
 {"level":"info","message":"PUT /api/users/updatePassword/14 - ::ffff:127.0.0.1"}
 {"level":"info","message":"PUT /api/users/updatePersonal/14 - ::ffff:127.0.0.1"}
+{"level":"info","message":"POST /api/auth/login - ::ffff:127.0.0.1"}
+{"level":"info","message":"PUT /api/users/updatePersonal/4 - ::ffff:127.0.0.1"}
+{"level":"info","message":"POST /api/auth/verify-password - ::ffff:127.0.0.1"}
+{"level":"info","message":"PUT /api/users/updatePassword/4 - ::ffff:127.0.0.1"}

@@ -13,7 +13,7 @@ const QualityDashboard = () => {
       case 'forms':
         return <FormsList />;
       case 'edit-profile' :
-              return <EditProfile />;
+        return <EditProfile />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">

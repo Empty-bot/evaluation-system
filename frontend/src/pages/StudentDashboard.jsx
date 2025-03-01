@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PanelRightOpen, PanelLeftOpen } from 'lucide-react';
 import StudentFormsList from '../components/student/StudentFormsList';
 import Sidebar from '../components/student/Sidebar';
+import EditProfile from '../components/student/EditProfile';
 
 const StudentDashboard = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -11,6 +12,8 @@ const StudentDashboard = () => {
     switch (activeSection) {
       case 'forms':
         return <StudentFormsList />;
+      case 'edit-profile' :
+        return <EditProfile />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">

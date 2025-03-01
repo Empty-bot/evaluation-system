@@ -16,10 +16,18 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
       } lg:translate-x-0`}
     >
       <div className="p-6 flex-1">
-        <div className="flex items-center space-x-2 mb-8">
-          <UserCircle className="w-6 h-6" />
-          <span className="text-lg font-semibold">{userName}</span>
-        </div>
+        <a
+            href="#"
+            onClick={() => setActiveSection("edit-profile")}
+            className={`flex items-center space-x-2 mb-8 p-2 rounded -mx-2 ${
+            activeSection === "edit-profile"
+                ? "text-blue-600 bg-blue-50"
+                : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+            }`}
+        >
+            <UserCircle className="w-6 h-6" />
+            <span className="text-lg font-semibold">{userName}</span>
+        </a>
 
         <nav className="space-y-4">
 
