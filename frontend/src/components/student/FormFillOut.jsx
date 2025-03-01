@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import { CircleArrowLeft } from "lucide-react";
 
 const FormFillOut = ({ form, onBack }) => {
@@ -331,30 +325,32 @@ const FormFillOut = ({ form, onBack }) => {
         </button>
       </div>
 
-      {/* Dialogue de confirmation */}
-      <Dialog
-        open={confirmationOpen}
-        onClose={handleCloseConfirmation}
-      >
-        <DialogTitle>Confirmation</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Êtes-vous sûr de vouloir soumettre vos réponses ? Une fois confirmée, cette action ne peut pas être annulée.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseConfirmation} color="primary">
-            Annuler
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            color="primary"
-            disabled={submitLoading}
-          >
-            Confirmer
-          </Button>
-        </DialogActions>
-      </Dialog>
+    
+      {confirmationOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 className="text-lg font-medium mb-4">Confirmation</h3>
+            <p className="text-gray-700 mb-6">
+              Êtes-vous sûr de vouloir soumettre vos réponses ? Une fois confirmée, cette action ne peut pas être annulée.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleSubmit}
+                disabled={submitLoading}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+              >
+                {submitLoading ? "Traitement..." : "Oui, confirmer"}
+              </button>
+              <button
+                onClick={handleCloseConfirmation}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg"
+              >
+                Non, annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
