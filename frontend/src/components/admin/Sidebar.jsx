@@ -3,12 +3,11 @@ import { UserCircle, Users, UserPlus, FilePlus2, Bell, LogOut, FileSpreadsheet }
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-
 const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem("user")); // Récupérer l'utilisateur depuis le stockage local
-  const userName = user ? `${user.first_name} ${user.surname}` : "Utilisateur"; // Afficher le prénom et le nom ou un texte par défaut  
+  const userName = user ? `${user.first_name} ${user.surname}` : "Utilisateur"; // Afficher le prénom et le nom ou un texte par défaut
   const { logout } = useContext(AuthContext);
-  
+
   return (
     <div
       className={`w-64 bg-white shadow-lg flex flex-col fixed h-full transform transition-transform duration-200 ease-in-out ${
@@ -16,10 +15,19 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
       } lg:translate-x-0`}
     >
       <div className="p-6 flex-1">
-        <div className="flex items-center space-x-2 mb-8">
+        {/* Profil utilisateur cliquable */}
+        <a
+          href="#"
+          onClick={() => setActiveSection("edit-profile")}
+          className={`flex items-center space-x-2 mb-8 p-2 rounded -mx-2 ${
+            activeSection === "edit-profile"
+              ? "text-blue-600 bg-blue-50"
+              : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+          }`}
+        >
           <UserCircle className="w-6 h-6" />
           <span className="text-lg font-semibold">{userName}</span>
-        </div>
+        </a>
 
         <nav className="space-y-4">
           <a
@@ -34,7 +42,6 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
             <Users className="w-5 h-5" />
             <span>Utilisateurs</span>
           </a>
-
           <a
             href="#"
             onClick={() => setActiveSection("new-user")}
@@ -47,7 +54,6 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
             <UserPlus className="w-5 h-5" />
             <span>Nouvel utilisateur</span>
           </a>
-
           <a
             href="#"
             onClick={() => setActiveSection("forms")}
@@ -60,7 +66,6 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
             <FileSpreadsheet className="w-5 h-5" />
             <span>Formulaires</span>
           </a>
-
           <a
             href="#"
             onClick={() => setActiveSection("new-form")}
@@ -75,7 +80,6 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
           </a>
         </nav>
       </div>
-
       <div className="p-6 border-t">
         <a
           href="#"

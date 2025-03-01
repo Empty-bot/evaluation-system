@@ -7,7 +7,7 @@ const verifyPasswdController = require('../controllers/verifyPasswdController');
 router.post('/register', auth, checkRole(['admin']), authController.register);
 //router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.post("/verify-password", auth, checkRole(['admin']), verifyPasswdController.verify);
+router.post("/verify-password", auth, verifyPasswdController.verifyPassword);
 
 // Route protégée de test
 router.get('/me', auth, (req, res) => {

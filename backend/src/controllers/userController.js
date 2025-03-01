@@ -69,6 +69,7 @@ const userController = {
     async updateUser(req, res) {
         try {
             const { email, role, department, first_name, surname } = req.body;
+
             const updated = await Users.update(req.params.id, { email, role, department, first_name, surname });
 
             if (!updated) {
@@ -77,6 +78,53 @@ const userController = {
             res.json({ message: "Utilisateur mis à jour avec succès." });
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la mise à jour de l'utilisateur." });
+        }
+    },
+
+    async personalUpdate(req, res) {
+        try {
+          const { department, first_name, surname } = req.body;
+          const userId = req.params.id; // ID de l'utilisateur à mettre à jour
+          const authenticatedUserId = req.user.userId; // ID extrait du token JWT
+          
+          if (String(authenticatedUserId) !== String(userId)) {
+            return res.status(403).json({ error: "Action non autorisée." });
+          }
+          
+          // Mise à jour des informations
+          const updated = await Users.personalUpdate(userId, { department, first_name, surname });
+          if (!updated) {
+            return res.status(404).json({ error: "Utilisateur non trouvé." });
+          }
+          
+          res.json({ success: true, message: "Utilisateur mis à jour avec succès." });
+        } catch (error) {
+          res.status(500).json({ error: "Erreur lors de la mise à jour de l'utilisateur." });
+        }
+      },
+
+    async passwordUpdate(req, res) {
+        try {
+            const { password } = req.body;
+            const userId = req.params.id;  // ID de l'utilisateur à mettre à jour
+            const authenticatedUserId = req.user.userId; // ID extrait du token JWT
+    
+            // Vérification : Un utilisateur ne peut modifier que ses propres infos (sauf admin)
+            if (String(authenticatedUserId) !== String(userId)) {
+                return res.status(403).json({ error: "Action non autorisée." });
+            }
+    
+            // Mise à jour des informations
+            const updated = await Users.passwordUpdate(userId, { password });
+    
+            if (!updated) {
+                return res.status(404).json({ error: "Utilisateur non trouvé." });
+            }
+    
+            res.json({ message: "Mot de passe mis à jour avec succès." });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: "Erreur lors de la mise à jour du mot de passe." });
         }
     },
 

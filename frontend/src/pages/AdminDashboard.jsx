@@ -5,6 +5,7 @@ import UserManagement from '../components/admin/UserManagement';
 import Sidebar from '../components/admin/Sidebar';
 import NewUserForm from '../components/admin/NewUserForm';
 import NewForm from '../components/admin/NewForm';
+import EditProfile from '../components/admin/EditProfile';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -20,6 +21,8 @@ const AdminDashboard = () => {
         return <FormManagement />;
       case 'new-form':
         return <NewForm />;
+      case 'edit-profile' :
+        return <EditProfile />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">

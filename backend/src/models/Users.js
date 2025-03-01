@@ -38,6 +38,11 @@ class Users {
     }
 
     // Récupérer un utilisateur par ID
+    static async findByIdPrime(id) {
+        const [rows] = await pool.execute('SELECT id, password, email, role, department, first_name, surname FROM users WHERE id = ?', [id]);
+        return rows[0] || null;
+    }
+
     static async findById(id) {
         const [rows] = await pool.execute('SELECT id, email, role, department, first_name, surname FROM users WHERE id = ?', [id]);
         return rows[0] || null;
@@ -48,6 +53,24 @@ class Users {
         const [result] = await pool.execute(
             'UPDATE users SET email = ?, role = ?, department = ?, updated_at = CURRENT_TIMESTAMP, first_name = ?, surname = ? WHERE id = ?',
             [email, role, department, first_name, surname, id]
+        );
+        return result.affectedRows > 0;
+    }
+
+    // Mettre à jour ses infos persos
+    static async personalUpdate(id, { department, first_name, surname }) {
+        const [result] = await pool.execute(
+            'UPDATE users SET department = ?, updated_at = CURRENT_TIMESTAMP, first_name = ?, surname = ? WHERE id = ?',
+            [department, first_name, surname, id]
+        );
+        return result.affectedRows > 0;
+    }
+
+    static async passwordUpdate(id, { password }) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const [result] = await pool.execute(
+            'UPDATE users SET password = ? WHERE id = ?',
+            [hashedPassword, id]
         );
         return result.affectedRows > 0;
     }
