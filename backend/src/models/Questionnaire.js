@@ -35,7 +35,6 @@ class Questionnaire {
     }
 
     static async findByDepartmentAndLevel(department, level) {
-        console.log("Query parameters:", { department, level });
         const [rows] = await pool.execute(
             `SELECT q.*
              FROM questionnaires q

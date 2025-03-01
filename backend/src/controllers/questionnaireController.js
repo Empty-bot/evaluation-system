@@ -2,6 +2,18 @@ const Questionnaire = require('../models/Questionnaire');
 const sendEmail = require("../config/mailer");
 const Users = require("../models/Users");
 
+function formatDeadline(isoString) {
+    const date = new Date(isoString);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
+
 const questionnaireController = {
     async getAll(req, res) {
         try {
@@ -61,7 +73,7 @@ const questionnaireController = {
             if (!department || !level) {
                 return res.status(400).json({ error: "Le département et le niveau sont requis." });
             }
-            console.log(department, level)
+
             const questionnaires = await Questionnaire.findByDepartmentAndLevel(department, level);
     
             if (!questionnaires || questionnaires.length === 0) {
@@ -70,7 +82,6 @@ const questionnaireController = {
     
             res.json(questionnaires);
         } catch (error) {
-            console.log(error)
             res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
         }
     },
@@ -85,12 +96,14 @@ const questionnaireController = {
             // Récupérer les étudiants inscrits au cours
             const students = await Users.findByCourse(course_id);
             
+            const formatedDeadline = formatDeadline(deadline);
+
             // Envoyer un email uniquement aux étudiants du cours
             students.forEach(student => {
               sendEmail(
                 student.email,
                 `📚 Nouveau questionnaire disponible : ${title}`,
-                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant cette date: ${deadline}.`
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre ${deadline ? `avant cette date: ${formatedDeadline}.` : "dès que possible."}`
               );
             });
             
@@ -133,13 +146,15 @@ const questionnaireController = {
           if (status === 'published' && questionnaire.status !== 'published') {
             // Récupérer les étudiants inscrits au cours
             const students = await Users.findByCourse(course_id);
+
+            const formatedDeadline = formatDeadline(deadline);
             
             // Envoyer un email uniquement aux étudiants du cours
             students.forEach(student => {
               sendEmail(
                 student.email,
                 `📚 Nouveau questionnaire disponible : ${title}`,
-                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant cette date: ${deadline}.`
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre ${deadline ? `avant cette date: ${formatedDeadline}.` : "dès que possible."}`
               );
             });
             
