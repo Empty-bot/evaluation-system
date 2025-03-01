@@ -49,7 +49,7 @@ const questionnaireController = {
               sendEmail(
                 student.email,
                 `📚 Nouveau questionnaire disponible : ${title}`,
-                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant le ${deadline}.`
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant cette date: ${deadline}.`
               );
             });
             
@@ -98,7 +98,7 @@ const questionnaireController = {
               sendEmail(
                 student.email,
                 `📚 Nouveau questionnaire disponible : ${title}`,
-                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant le ${deadline}.`
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant cette date: ${deadline}.`
               );
             });
             
