@@ -65,22 +65,15 @@ const NewUserForm = () => {
     e.preventDefault();
     setFormError("");
     setFormSuccess("");
-
+  
     if (formData.password !== formData.confirmPassword) {
       setFormError("Les mots de passe ne correspondent pas.");
       return;
     }
-
+  
     setFormLoading(true);
-    const success = await handleCreateUser();
+    await handleCreateUser(); 
     setFormLoading(false);
-
-    if (success) {
-      setFormSuccess("Utilisateur créé avec succès !");
-      setFormData({ first_name: "", surname: "", email: "", role: "student", department: "", password: "", confirmPassword: "" });
-    } else {
-      setFormError("Erreur lors de la création de l'utilisateur.");
-    }
   };
 
   return (
