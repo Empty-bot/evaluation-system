@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, CirclePlus, Trash2, X } from 'lucide-react';
+import { Plus, CirclePlus, Trash2, X, Calendar } from 'lucide-react';
 import { Alert } from '@mui/material';
 
 const NewForm = () => {
   const [formTitle, setFormTitle] = useState('');
   const [courseId, setCourseId] = useState('');
   const [description, setDescription] = useState('');
+  const [deadline, setDeadline] = useState(''); // Ajout du champ deadline
   const [publishOnCreate, setPublishOnCreate] = useState(false);
   const [questions, setQuestions] = useState([{
     label: '',
@@ -109,6 +110,7 @@ const NewForm = () => {
           description,
           status: publishOnCreate ? 'published' : 'draft',
           course_id: parseInt(courseId),
+          deadline: deadline || null, // Ajout du champ deadline
         })
       });
 
@@ -137,6 +139,19 @@ const NewForm = () => {
         message: 'Questionnaire créé avec succès',
         severity: 'success'
       });
+
+      // Réinitialiser le formulaire après création réussie
+      setFormTitle('');
+      setCourseId('');
+      setDescription('');
+      setDeadline('');
+      setPublishOnCreate(false);
+      setQuestions([{
+        label: '',
+        type: 'multiple_choice',
+        possible_answers: ['Option n° 1'],
+        hasError: false
+      }]);
 
     } catch (error) {
       setAlert({
@@ -205,6 +220,21 @@ const NewForm = () => {
           placeholder="Description du formulaire"
           className="mb-2 border font-semibold bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        
+        {/* Ajout du champ deadline */}
+        <div className="mb-2 relative">
+          <div className="flex items-center">
+            <Calendar className="absolute left-3 text-gray-500" size={16} />
+            <input
+              type="datetime-local"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              placeholder="Délai (optionnel)"
+              className="mb-2 pl-10 border font-semibold bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <p className="text-sm text-gray-500">Délai de réponse (optionnel)</p>
+        </div>
       </div>
 
       {questions.map((question, index) => (
