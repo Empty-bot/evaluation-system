@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react"; 
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import logo from "../assets/LOGOUAM.png"; 
 import { useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import { AuthContext } from "../context/AuthContext"; 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // État pour afficher/masquer le mot de passe
-  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,21 +31,24 @@ const Login = () => {
   
       let data;
       try {
-        data = await response.json(); // Essayer de parser la réponse comme JSON
+        data = await response.json();
       } catch (err) {
-        // Si ce n'est pas du JSON, récupérer le texte brut
         const text = await response.text();
         throw new Error(text || "Une erreur inconnue s'est produite.");
       }
   
       if (!response.ok) {
-        // Utilisez le message d'erreur spécifique retourné par le backend
         throw new Error(data.error || "Une erreur s'est produite.");
       }
   
-      // Stocker le token JWT et rediriger si nécessaire
+      // Stocker le token JWT et mettre à jour le contexte
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      
+      // Mettre à jour le contexte d'authentification
+      setUser(data.user);
+      
+      // Rediriger en fonction du rôle
       switch (data.user.role) {
         case "admin":
           navigate("/admin-dashboard");
@@ -61,15 +66,13 @@ const Login = () => {
           navigate("/");
       }
     } catch (err) {
-      // Affichez le message d'erreur spécifique
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  
   };
   
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full">
       <div className="bg-white p-8 md:p-12 rounded-lg shadow-xl w-full max-w-md lg:max-w-xl min-h-[500px] lg:min-h-[600px] flex flex-col items-center">
@@ -77,7 +80,7 @@ const Login = () => {
         <img
           src={logo}
           alt="Logo UAM"
-          className="w-24 h-32 md:w-32 md:h-40 mb-6" /* Logo responsive */
+          className="w-24 h-32 md:w-32 md:h-40 mb-6"
         />
 
         {/* Titre principal */}
@@ -86,17 +89,17 @@ const Login = () => {
         </h1>
 
         {/* Texte "Connexion" */}
-        <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8"> {/* Texte responsive */}
+        <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8">
           Connexion
         </p>
         {error && (
-                <Alert className="w-full" severity="error" sx={{ mb: 3 }}>
-                  <AlertTitle>Erreur</AlertTitle>
-                  {error}
-                </Alert>
-              )}
+          <Alert className="w-full" severity="error" sx={{ mb: 3 }}>
+            <AlertTitle>Erreur</AlertTitle>
+            {error}
+          </Alert>
+        )}
         {/* Formulaire */}
-        <form onSubmit={handleSubmit} className="w-full space-y-4 md:space-y-6"> {/* Espacement responsive */}
+        <form onSubmit={handleSubmit} className="w-full space-y-4 md:space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -111,7 +114,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full mt-1 md:mt-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#993921] focus:border-[#993921] bg-white text-black" /* Champ de texte responsive */
+              className="w-full mt-1 md:mt-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#993921] focus:border-[#993921] bg-white text-black"
             />
           </div>
           <div className="relative">
@@ -123,18 +126,18 @@ const Login = () => {
             </label>
             <input
               placeholder="Entrez votre mot de passe"
-              type={showPassword ? "text" : "password"} /* Basculer entre text et password */
+              type={showPassword ? "text" : "password"}
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full mt-1 md:mt-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#993921] focus:border-[#993921] bg-white text-black pr-10" /* Champ de texte responsive */
+              className="w-full mt-1 md:mt-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#993921] focus:border-[#993921] bg-white text-black pr-10"
             />
             {/* Icône pour afficher/masquer le mot de passe */}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-1 pr-3 flex items-center text-sm leading-5 mt-7 bg-transparent border-none p-0" // Key changes here
+              className="absolute inset-y-0 right-1 pr-3 flex items-center text-sm leading-5 mt-7 bg-transparent border-none p-0"
             >
               {showPassword ? (
                 <FaEyeSlash className="text-gray-500" />
@@ -145,7 +148,7 @@ const Login = () => {
           </div>
 
           {/* Conteneur pour le bouton et le lien */}
-          <div className="flex items-center justify-between mt-6 md:mt-8"> {/* Espacement responsive */}
+          <div className="flex items-center justify-between mt-6 md:mt-8">
             <a
               href="#"
               className="text-sm text-gray-500 hover:text-[#993921]"
@@ -155,7 +158,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#993921] text-white py-2 md:py-3 px-6 md:px-8 rounded-lg hover:bg-[#7a2c19] focus:outline-none focus:ring-2 focus:ring-[#993921] focus:ring-offset-2 text-sm" /* Bouton responsive */
+              className="bg-[#993921] text-white py-2 md:py-3 px-6 md:px-8 rounded-lg hover:bg-[#7a2c19] focus:outline-none focus:ring-2 focus:ring-[#993921] focus:ring-offset-2 text-sm"
             >
               {loading ? "Connexion..." : "Se connecter"}
             </button>
