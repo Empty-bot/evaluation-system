@@ -95,3 +95,6 @@ ADD surname VARCHAR(50) NOT NULL;
 -- CREATE INDEX idx_user_email ON users(email);
 -- CREATE INDEX idx_user_role ON users(role);
 -- CREATE INDEX idx_course_code ON courses(code);
+
+ALTER TABLE questionnaires
+ADD deadline DATETIME;
