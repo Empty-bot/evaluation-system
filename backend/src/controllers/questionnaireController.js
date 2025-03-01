@@ -36,8 +36,8 @@ const questionnaireController = {
 
     async create(req, res) {
         try {
-          const { title, description, status, course_id } = req.body;
-          const questionnaireId = await Questionnaire.create({ title, description, status, course_id });
+          const { title, description, status, course_id, deadline } = req.body;
+          const questionnaireId = await Questionnaire.create({ title, description, status, course_id, deadline });
           
           // Envoyer des emails uniquement si le statut est "published"
           if (status === 'published') {
@@ -49,7 +49,7 @@ const questionnaireController = {
               sendEmail(
                 student.email,
                 `📚 Nouveau questionnaire disponible : ${title}`,
-                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre.`
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant le ${deadline}.`
               );
             });
             
@@ -71,7 +71,7 @@ const questionnaireController = {
 
       async update(req, res) {
         try {
-          const { title, description, status, course_id } = req.body;
+          const { title, description, status, course_id, deadline } = req.body;
           const { id } = req.params;
           
           // Vérifier si le questionnaire existe et récupérer son statut actuel
@@ -86,7 +86,7 @@ const questionnaireController = {
           }
           
           // Mise à jour du questionnaire
-          const updated = await Questionnaire.update(id, { title, description, status, course_id });
+          const updated = await Questionnaire.update(id, { title, description, status, course_id, deadline });
           
           // Vérifier si le statut est passé à "published"
           if (status === 'published' && questionnaire.status !== 'published') {
@@ -98,7 +98,7 @@ const questionnaireController = {
               sendEmail(
                 student.email,
                 `📚 Nouveau questionnaire disponible : ${title}`,
-                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre.`
+                `Un nouveau questionnaire a été ajouté pour votre cours. Connectez-vous pour répondre avant le ${deadline}.`
               );
             });
             

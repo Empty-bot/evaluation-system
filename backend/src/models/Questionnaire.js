@@ -23,18 +23,18 @@ class Questionnaire {
         return rows;
     }
 
-    static async create({ title, description, status, course_id }) {
+    static async create({ title, description, status, course_id, deadline }) {
         const [result] = await pool.execute(
-            'INSERT INTO questionnaires (title, description, status, course_id) VALUES (?, ?, ?, ?)',
-            [title, description, status, course_id]
+            'INSERT INTO questionnaires (title, description, status, course_id, deadline) VALUES (?, ?, ?, ?, ?)',
+            [title, description, status, course_id, deadline]
         );
         return result.insertId;
     }
 
-    static async update(id, { title, description, status, course_id }) {
+    static async update(id, { title, description, status, course_id, deadline }) {
         const [result] = await pool.execute(
-            'UPDATE questionnaires SET title = ?, description = ?, status = ?, course_id = ? WHERE id = ?',
-            [title, description, status, course_id, id]
+            'UPDATE questionnaires SET title = ?, description = ?, status = ?, course_id = ?, deadline = ? WHERE id = ?',
+            [title, description, status, course_id, deadline, id]
         );
         return result.affectedRows > 0;
     }
