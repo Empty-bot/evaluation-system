@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PanelRightOpen, PanelLeftOpen } from 'lucide-react';
 import FormsList from '../components/quality/FormsList';
 import Sidebar from '../components/quality/Sidebar';
+import EditProfile from '../components/quality/EditProfile';
 
 const QualityDashboard = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -11,6 +12,8 @@ const QualityDashboard = () => {
     switch (activeSection) {
       case 'forms':
         return <FormsList />;
+      case 'edit-profile' :
+              return <EditProfile />;
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
