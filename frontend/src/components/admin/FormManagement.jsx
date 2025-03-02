@@ -20,6 +20,7 @@ const FormManagement = () => {
   const [searchType, setSearchType] = useState("");
   const [department, setDepartment] = useState("");
   const [level, setLevel] = useState("");
+  const [code, setCode] = useState("");
 
   const translateStatus = (status) => {
     const translations = {
@@ -56,6 +57,8 @@ const FormManagement = () => {
         url = `http://localhost:3001/api/questionnaires/by-department/${encodeURIComponent(department)}`;
       } else if (searchType === "department_level" && department && level) {
         url = `http://localhost:3001/api/questionnaires/by-department-and-level/${encodeURIComponent(department)}/${encodeURIComponent(level)}`;
+      } else if (searchType === "code" && code) {
+        url = `http://localhost:3001/api/questionnaires/by-course-code/${encodeURIComponent(code)}`;
       }
 
       const token = localStorage.getItem("token");
@@ -74,18 +77,9 @@ const FormManagement = () => {
 
       const data = await response.json();
 
-      setForms(data.data || []);
+      setForms(Array.isArray(data.data) ? data.data : [data.data]);
+      setInfoMessage(data.message);
 
-      // Définir le message d'info si nécessaire
-      if (!data.data || data.data.length === 0) {
-        if (searchType === "department") {
-          setInfoMessage(`Aucun questionnaire trouvé pour le département ${department}.`);
-        } else if (searchType === "department_level") {
-          setInfoMessage(`Aucun questionnaire trouvé pour le département ${department} et le niveau ${level}.`);
-        } else {
-          setInfoMessage("Aucun cours trouvé.");
-        }
-      }
     } catch (err) {
       setError(err.message);
       setForms([]);
@@ -99,13 +93,14 @@ const FormManagement = () => {
     setSearchType("");
     setDepartment("");
     setLevel("");
+    setCode("");
   };
 
   useEffect(() => {
-    if (searchType === "" && department === "" && level === "") {
+    if (searchType === "" && department === "" && level === "" && code === "") {
       fetchForms(); 
     }
-  }, [searchType, department, level]);
+  }, [searchType, department, level, code]);
 
   useEffect(() => {
     fetchForms();
@@ -304,12 +299,14 @@ const FormManagement = () => {
                 setSearchType(e.target.value);
                 setDepartment("");
                 setLevel("");
+                setCode("");
               }} 
               className="border border-gray-300 bg-gray-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Filtrer par...</option>
               <option value="department">Département</option>
               <option value="department_level">Département et Niveau</option>
+              <option value="code">Code cours</option>
             </select>
 
             {(searchType === "department" || searchType === "department_level") && (
@@ -344,12 +341,25 @@ const FormManagement = () => {
               </select>
             )}
 
+            {searchType === "code" && (
+              <input 
+              type="text" 
+              value={code} 
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="Entrez le code cours"
+              className="border border-gray-300 bg-gray-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+              disabled={!searchType} 
+              required
+              />  
+            )}
+
             <button 
               type="submit"
               className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={
                 (searchType === "department" && !department) || 
-                (searchType === "department_level" && (!department || !level))
+                (searchType === "department_level" && (!department || !level)) ||
+                (searchType === "code" && !code)
               }
             >
               <Search className="w-5 h-5" />

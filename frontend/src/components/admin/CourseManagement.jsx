@@ -17,6 +17,7 @@ const CourseManagement = () => {
   const [searchType, setSearchType] = useState("");
   const [department, setDepartment] = useState("");
   const [level, setLevel] = useState("");
+  const [code, setCode] = useState("");
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -32,6 +33,8 @@ const CourseManagement = () => {
         url = `http://localhost:3001/api/courses/by-department/${encodeURIComponent(department)}`;
       } else if (searchType === "department_level" && department && level) {
         url = `http://localhost:3001/api/courses/by-department-and-level/${encodeURIComponent(department)}/${encodeURIComponent(level)}`;
+      } else if (searchType === "code" && code) {
+        url = `http://localhost:3001/api/courses/by-course-code/${encodeURIComponent(code)}`;
       }
 
       const token = localStorage.getItem("token");
@@ -50,18 +53,9 @@ const CourseManagement = () => {
 
       const data = await response.json();
       
-      setCourses(data.data || []);
+      setCourses(Array.isArray(data.data) ? data.data : [data.data]);
+      setInfoMessage(data.message);
       
-      // Définir le message d'info si nécessaire
-      if (!data.data || data.data.length === 0) {
-        if (searchType === "department") {
-          setInfoMessage(`Aucun cours trouvé pour le département ${department}.`);
-        } else if (searchType === "department_level") {
-          setInfoMessage(`Aucun cours trouvé pour le département ${department} et le niveau ${level}.`);
-        } else {
-          setInfoMessage("Aucun cours trouvé.");
-        }
-      }
     } catch (err) {
       setError(err.message);
       setCourses([]); 
@@ -75,13 +69,14 @@ const CourseManagement = () => {
     setSearchType("");
     setDepartment("");
     setLevel("");
+    setCode("");
   };
 
   useEffect(() => {
-    if (searchType === "" && department === "" && level === "") {
+    if (searchType === "" && department === "" && level === "" && code === "") {
       fetchCourses(); 
     }
-  }, [searchType, department, level]);
+  }, [searchType, department, level, code]);
 
   useEffect(() => {
     fetchCourses();
@@ -135,7 +130,7 @@ const CourseManagement = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <p className="text-lg mb-4 text-center">
               Êtes-vous sûr de vouloir supprimer le cours <strong>{courseToDelete.name}</strong> ?
-              Cette action est <span className="text-red-600 font-bold">irréversible</span>.
+              Cette action est <span className="text-red-600 font-bold">irréversible</span> <br />et entrainera la suppression de tous les questionnaires liés à ce cours.
             </p>
             <div className="flex justify-end space-x-4">
               <button 
@@ -169,12 +164,14 @@ const CourseManagement = () => {
                 setSearchType(e.target.value);
                 setDepartment("");
                 setLevel("");
+                setCode("");
               }} 
               className="border border-gray-300 bg-gray-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Filtrer par...</option>
               <option value="department">Département</option>
               <option value="department_level">Département et Niveau</option>
+              <option value="code">Code cours</option>
             </select>
 
             {(searchType === "department" || searchType === "department_level") && (
@@ -209,12 +206,25 @@ const CourseManagement = () => {
               </select>
             )}
 
+            {searchType === "code" && (
+              <input 
+              type="text" 
+              value={code} 
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="Entrez le code cours"
+              className="border border-gray-300 bg-gray-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+              disabled={!searchType} 
+              required
+              />  
+            )}
+
             <button 
               type="submit"
               className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={
                 (searchType === "department" && !department) || 
-                (searchType === "department_level" && (!department || !level))
+                (searchType === "department_level" && (!department || !level)) ||
+                (searchType === "code" && !code)
               }
             >
               <Search className="w-5 h-5" />

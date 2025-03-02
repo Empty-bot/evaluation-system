@@ -10,4 +10,5 @@ router.put('/:id', auth, checkRole(['admin']), courseController.updateCourse);
 router.delete('/:id', auth, checkRole(['admin']), courseController.deleteCourse);
 router.get('/by-department/:department', auth, checkRole(['admin']), courseController.getByDepartment);
 router.get('/by-department-and-level/:department/:level', auth, checkRole(['admin']), courseController.getByDepartmentAndLevel);
+router.get('/by-course-code/:code', auth, checkRole(['admin']), courseController.getByCode);
 module.exports = router;

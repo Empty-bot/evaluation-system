@@ -1,6 +1,7 @@
 const Questionnaire = require('../models/Questionnaire');
 const sendEmail = require("../config/mailer");
 const Users = require("../models/Users");
+const Course = require("../models/Course");
 
 function formatDeadline(isoString) {
     const date = new Date(isoString);
@@ -80,6 +81,32 @@ const questionnaireController = {
                 return res.json({ message: "Aucun questionnaire trouvé pour ce département et ce niveau.", data: [] });
             }
     
+            res.json({ data: questionnaires });
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
+        }
+    },
+
+    async getByCourseCode(req, res) {
+        try {
+            const { code } = req.params;
+    
+            // Valider que le code est fourni
+            if (!code) {
+                return res.status(400).json({ error: "Le code de cours est requis." });
+            }
+
+            const course = await Course.findByCode(code);
+            if (!course || course.length === 0) {
+                return res.json({ message: "Ce cours n'existe pas. Assurez-vous d'avoir saisi le bon code cours.", data: [] });
+            }
+    
+            const questionnaires = await Questionnaire.findByCourseCode(code);
+    
+            if (!questionnaires || questionnaires.length === 0) {
+                return res.json({ message: "Aucun questionnaire trouvé pour ce cours.", data: [] });
+            }
+
             res.json({ data: questionnaires });
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });

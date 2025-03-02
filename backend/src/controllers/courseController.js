@@ -63,6 +63,27 @@ const courseController = {
         }
     },
 
+    async getByCode(req, res) {
+        try {
+            const { code } = req.params;
+    
+            // Valider que le département est fourni
+            if (!code) {
+                return res.status(400).json({ error: "Le code de cours est requis." });
+            }
+    
+            const course = await Course.findByCode(code);
+    
+            if (!course || course.length === 0) {
+                return res.json({ message: "Ce cours n'existe pas. Assurez-vous d'avoir saisi le bon code cours.", data: [] });
+            }
+
+            res.json({ data: course });
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors de la récupération du cours." });
+        }
+    },
+
     async createCourse(req, res) {
         try {
             const { code, name, department, level } = req.body;

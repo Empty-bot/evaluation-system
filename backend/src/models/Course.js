@@ -11,6 +11,11 @@ class Course {
         return rows[0] || null;
     }
 
+    static async findByCode(code) {
+        const [rows] = await pool.execute('SELECT * FROM courses WHERE code = ?', [code]);
+        return rows[0] || null;
+    }
+
     static async findByDepartment(department) {
         const [rows] = await pool.execute('SELECT * FROM courses WHERE department = ?', [department]);
         return rows;

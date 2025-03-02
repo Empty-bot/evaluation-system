@@ -51,7 +51,10 @@ const FormsList = () => {
         url = `http://localhost:3001/api/questionnaires/by-department/${encodeURIComponent(department)}`;
       } else if (searchType === "department_level" && department && level) {
         url = `http://localhost:3001/api/questionnaires/by-department-and-level/${encodeURIComponent(department)}/${encodeURIComponent(level)}`;
+      } else if (searchType === "code" && code) {
+        url = `http://localhost:3001/api/questionnaires/by-course-code/${encodeURIComponent(code)}`;
       }
+
 
       const token = localStorage.getItem("token");
       const response = await fetch(url, {
@@ -68,15 +71,13 @@ const FormsList = () => {
       }
 
       const data = await response.json();
-      if (data.data.length === 0) {
-        setInfoMessage(data.message);
-      } else {
-          setForms(data.data);
-          setInfoMessage(""); // Réinitialiser le message s'il y a des résultats
-      }
-      setForms(data.data);
+
+      setForms(Array.isArray(data.data) ? data.data : [data.data]);
+      setInfoMessage(data.message);
+
     } catch (err) {
       setError(err.message);
+      setForms([]);
     } finally {
       setLoading(false);
     }
@@ -87,13 +88,14 @@ const FormsList = () => {
     setSearchType("");
     setDepartment("");
     setLevel("");
+    setCode("");
   };
 
   useEffect(() => {
-      if (searchType === "" && department === "" && level === "") {
+      if (searchType === "" && department === "" && level === "" && code === "") {
         fetchForms(); // Relance la récupération des formulaires après réinitialisation
       }
-    }, [searchType, department, level]);
+    }, [searchType, department, level, code]);
 
   useEffect(() => {
     fetchForms();
@@ -122,12 +124,14 @@ const FormsList = () => {
             setSearchType(e.target.value);
             setDepartment("");
             setLevel("");
+            setCode("");
           }} 
           className="border border-gray-300 bg-gray-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Filtrer par...</option>
           <option value="department">Département</option>
           <option value="department_level">Département et Niveau</option>
+          <option value="code">Code cours</option>
         </select>
 
         {(searchType === "department" || searchType === "department_level") && (
@@ -162,12 +166,25 @@ const FormsList = () => {
           </select>
         )}
 
+        {searchType === "code" && (
+        <input 
+        type="text" 
+        value={code} 
+        onChange={(e) => setCode(e.target.value)}
+        placeholder="Entrez le code cours"
+        className="border border-gray-300 bg-gray-50 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+        disabled={!searchType} 
+        required
+        />  
+        )}
+
         <button 
           type="submit"
           className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={
             (searchType === "department" && !department) || 
-            (searchType === "department_level" && (!department || !level))
+            (searchType === "department_level" && (!department || !level)) ||
+            (searchType === "code" && !code)
           }
         >
           <Search className="w-5 h-5" />

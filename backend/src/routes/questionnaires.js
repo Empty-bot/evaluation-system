@@ -12,4 +12,5 @@ router.put('/:id/publish', auth, checkRole(['admin']), questionnaireController.p
 router.delete('/:id', auth, checkRole(['admin']), questionnaireController.delete);
 router.get('/by-department/:department', auth, checkRole(['admin', 'quality_manager']), questionnaireController.getByDepartment);
 router.get('/by-department-and-level/:department/:level', auth, checkRole(['admin', 'quality_manager']), questionnaireController.getByDepartmentAndLevel);
+router.get('/by-course-code/:code', auth, checkRole(['admin', 'quality_manager']), questionnaireController.getByCourseCode);
 module.exports = router;

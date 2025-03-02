@@ -46,6 +46,17 @@ class Questionnaire {
         return rows;
     }
 
+    static async findByCourseCode(code) {
+        const [rows] = await pool.execute(
+            `SELECT q.*
+             FROM questionnaires q
+             JOIN courses c ON q.course_id = c.id
+             WHERE c.code = ?`,
+            [code]
+        );
+        return rows;
+    }
+
     static async create({ title, description, status, course_id, deadline }) {
         const [result] = await pool.execute(
             'INSERT INTO questionnaires (title, description, status, course_id, deadline) VALUES (?, ?, ?, ?, ?)',
