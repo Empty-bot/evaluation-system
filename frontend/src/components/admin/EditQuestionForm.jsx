@@ -3,7 +3,7 @@ import { Trash2, Plus, CircleArrowLeft } from 'lucide-react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
-export default function EditQuestionForm({ questionLabel, questionId, onCancel, onUpdate }) {
+const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => {
   // États
   const [formData, setFormData] = useState({
     label: "",
@@ -13,6 +13,7 @@ export default function EditQuestionForm({ questionLabel, questionId, onCancel, 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   // Chargement initial des données
   useEffect(() => {
@@ -42,6 +43,27 @@ export default function EditQuestionForm({ questionLabel, questionId, onCancel, 
 
     fetchQuestion();
   }, [questionId]);
+
+  // Validation du formulaire à chaque changement
+  useEffect(() => {
+    const validateForm = () => {
+      // Vérifier que le libellé est rempli
+      if (!formData.label.trim()) return false;
+      
+      // Vérifier que le type est sélectionné
+      if (!formData.type) return false;
+      
+      // Pour les questions à choix, vérifier qu'il y a au moins deux options valides
+      if (formData.type === "multiple_choice" || formData.type === "single_choice") {
+        const validAnswers = formData.possible_answers.filter(answer => answer.trim());
+        if (validAnswers.length < 2) return false;
+      }
+      
+      return true;
+    };
+    
+    setIsFormValid(validateForm());
+  }, [formData]);
 
   // Handlers
   const handleTypeChange = (e) => {
@@ -178,7 +200,7 @@ export default function EditQuestionForm({ questionLabel, questionId, onCancel, 
             required
           >
             <option value="">Sélectionnez un type</option>
-            <option value="text">Réponse libre</option>
+            <option value="text">Question ouverte</option>
             <option value="multiple_choice">Choix multiples</option>
             <option value="single_choice">Choix unique</option>
           </select>
@@ -239,15 +261,13 @@ export default function EditQuestionForm({ questionLabel, questionId, onCancel, 
         {/* Boutons d'action */}
         <div className="flex gap-4 pt-4">
           <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 hover:bg-gray-600 bg-gray-400 text-white rounded-lg"
-          >
-            Annuler
-          </button>
-          <button
             type="submit"
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            disabled={!isFormValid}
+            className={`flex-1 px-4 py-2 text-white rounded-lg ${
+              isFormValid
+                ? "bg-blue-600 hover:bg-blue-700"
+                : 'bg-gray-400 cursor-not-allowed' 
+            }`}
           >
             Enregistrer les modifications
           </button>
@@ -284,4 +304,6 @@ export default function EditQuestionForm({ questionLabel, questionId, onCancel, 
       )}
     </div>
   );
-}
+};
+
+export default EditQuestionForm;

@@ -160,7 +160,7 @@ const NewUserForm = () => {
         <button 
           type="submit" 
           disabled={formLoading || !isFormValid()} 
-          className={`px-4 py-2 rounded-lg w-full ${formLoading || !isFormValid() ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+          className={`px-4 py-2 rounded-lg w-full ${formLoading || !isFormValid() ? "bg-gray-400 cursor-not-allowed text-white" : "bg-blue-600 text-white hover:bg-blue-700"}`}
         >
           {formLoading ? "Création..." : "Créer l'utilisateur"}
         </button>

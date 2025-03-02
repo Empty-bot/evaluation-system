@@ -201,7 +201,7 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
             <button
               type="submit"
               disabled={submitting || !isFormValid()}
-              className={`px-4 py-2 rounded-lg w-full ${submitting || !isFormValid() ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+              className={`px-4 py-2 rounded-lg w-full ${submitting || !isFormValid() ? "bg-gray-400 cursor-not-allowed text-white" : "bg-blue-600 text-white hover:bg-blue-700"}`}
             >
               {submitting ? "Enregistrement..." : "Valider les changements"}
             </button>

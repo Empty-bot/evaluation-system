@@ -20,6 +20,7 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [originalName, setOriginalName] = useState({ first_name: "", surname: "" });
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -55,6 +56,34 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
 
     fetchUser();
   }, [userId]);
+
+  // Valider le formulaire à chaque changement de formData
+  useEffect(() => {
+    const validateForm = () => {
+      // Vérifier que tous les champs obligatoires sont remplis
+      const { first_name, surname, email, role, adminPassword } = formData;
+      
+      // Vérifier que le prénom est rempli
+      if (!first_name.trim()) return false;
+      
+      // Vérifier que le nom est rempli
+      if (!surname.trim()) return false;
+      
+      // Vérifier que l'email est rempli et valide
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.trim() || !emailRegex.test(email)) return false;
+      
+      // Vérifier que le rôle est sélectionné
+      if (!role) return false;
+      
+      // Vérifier que le mot de passe admin est rempli
+      if (!adminPassword.trim()) return false;
+      
+      return true;
+    };
+    
+    setIsFormValid(validateForm());
+  }, [formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -193,18 +222,26 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
         </div>
       </div>
       <div className="flex space-x-4">
-        <button type="button" onClick={onCancel} className="px-4 py-2 hover:bg-gray-600 bg-gray-400 text-white rounded-lg">Annuler</button>
-        <button type="submit" disabled={loading} className={`px-4 py-2 rounded-lg w-full ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}>
-            {loading ? "Modification..." : "Valider les changements"}
+        <button 
+          type="submit" 
+          disabled={loading || !isFormValid} 
+          className={`px-4 py-2 rounded-lg w-full ${
+            loading 
+              ? "bg-gray-400 cursor-not-allowed" 
+              : isFormValid 
+                ? "bg-blue-600 text-white hover:bg-blue-700" 
+                : "bg-gray-400 cursor-not-allowed text-white"
+          }`}
+        >
+          {loading ? "Modification..." : "Valider les changements"}
         </button>
-        
       </div>
     </form>
     {showConfirmPopup && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <p className="text-lg mb-4">Êtes-vous sûr de vouloir effectuer ces modifications ?</p>
-          <div className="flex justify-end space-x-4"> {/* Ajout de justify-end pour aligner les boutons à droite */}
+          <div className="flex justify-end space-x-4">
             <button 
               onClick={confirmUpdate} 
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
@@ -220,7 +257,7 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
           </div>
         </div>
       </div>
-      )}
+    )}
   </div>
   </div>
   );
