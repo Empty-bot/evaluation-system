@@ -4,7 +4,7 @@ const courseController = {
     async getAllCourses(req, res) {
         try {
             const courses = await Course.findAll();
-            res.json(courses);
+            res.json({data: courses});
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des cours." });
         }
@@ -19,6 +19,47 @@ const courseController = {
             res.json(course);
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération du cours." });
+        }
+    },
+
+    async getByDepartment(req, res) {
+        try {
+            const { department } = req.params;
+    
+            // Valider que le département est fourni
+            if (!department) {
+                return res.status(400).json({ error: "Le département est requis." });
+            }
+    
+            const courses = await Course.findByDepartment(department);
+    
+            if (!courses || courses.length === 0) {
+                return res.json({ message: "Aucun cours trouvé pour ce département.", data: [] });
+            }
+
+            res.json({ data: courses });
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors de la récupération des cours." });
+        }
+    },
+
+    async getByDepartmentAndLevel(req, res) {
+        try {
+            const { department, level } = req.params;
+    
+            if (!department || !level) {
+                return res.status(400).json({ error: "Le département et le niveau sont requis." });
+            }
+
+            const courses = await Course.findByDepartmentAndLevel(department, level);
+    
+            if (!courses || courses.length === 0) {
+                return res.json({ message: "Aucun cours trouvé pour ce département et ce niveau.", data: [] });
+            }
+    
+            res.json({ data: courses });
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors de la récupération des cours." });
         }
     },
 

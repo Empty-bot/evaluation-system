@@ -11,6 +11,16 @@ class Course {
         return rows[0] || null;
     }
 
+    static async findByDepartment(department) {
+        const [rows] = await pool.execute('SELECT * FROM courses WHERE department = ?', [department]);
+        return rows;
+    }
+
+    static async findByDepartmentAndLevel(department, level) {
+        const [rows] = await pool.execute('SELECT * FROM courses WHERE department = ? AND level = ?', [department, level]);
+        return rows;
+    }
+
     static async create({ code, name, department, level }) {
         const [result] = await pool.execute(
             'INSERT INTO courses (code, name, department, level) VALUES (?, ?, ?, ?)',
