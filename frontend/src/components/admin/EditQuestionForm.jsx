@@ -3,7 +3,7 @@ import { Trash2, Plus, CircleArrowLeft } from 'lucide-react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
-export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
+export default function EditQuestionForm({ questionLabel, questionId, onCancel, onUpdate }) {
   // États
   const [formData, setFormData] = useState({
     label: "",
@@ -138,7 +138,7 @@ export default function EditQuestionForm({ questionId, onCancel, onUpdate }) {
         >
           <CircleArrowLeft className="w-5 h-5" />
         </button>
-        <h2 className="text-xl text-center font-semibold mb-4">Modifier la question</h2>
+        <h2 className="text-xl text-center font-semibold mb-4">Modifier la question "{questionLabel}"</h2>
       </div>
 
       {/* Message d'erreur */}

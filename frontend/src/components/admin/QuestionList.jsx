@@ -11,6 +11,7 @@ const QuestionList = ({ form, onBack }) => {
   const [error, setError] = useState(null);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [editingQuestionLabel, setEditingQuestionLabel] = useState(null);
   const [showStatusError, setShowStatusError] = useState(false);
   const [questionToDelete, setQuestionToDelete] = useState(null);
 
@@ -59,6 +60,7 @@ const QuestionList = ({ form, onBack }) => {
 
     if (form.status === "draft") {
       setEditingQuestionId(question.id);
+      setEditingQuestionLabel(question.label)  
     } else {
       setShowStatusError(true);
     }
@@ -143,6 +145,7 @@ const QuestionList = ({ form, onBack }) => {
       {/* Affichage du formulaire de modification si une question est en édition */}
       {editingQuestionId ? (
         <EditQuestionForm 
+          questionLabel={editingQuestionLabel}  
           questionId={editingQuestionId} 
           onCancel={() => setEditingQuestionId(null)} 
           onUpdate={() => setEditingQuestionId(null)}
