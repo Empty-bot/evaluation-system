@@ -45,6 +45,7 @@ const FormManagement = () => {
   const fetchForms = async () => {
     setLoading(true);
     setError(null);
+    setInfoMessage(null); 
     
     // URL de base par défaut
     let url = "http://localhost:3001/api/questionnaires/";
@@ -72,16 +73,22 @@ const FormManagement = () => {
       }
 
       const data = await response.json();
-      if (data.data.length === 0) {
-        setInfoMessage(data.message);
-      } else {
-          setForms(data.data);
-          setInfoMessage(""); // Réinitialiser le message s'il y a des résultats
-      }
-      setForms(data.data);
-    } catch (err) {
 
+      setForms(data.data || []);
+
+      // Définir le message d'info si nécessaire
+      if (!data.data || data.data.length === 0) {
+        if (searchType === "department") {
+          setInfoMessage(`Aucun questionnaire trouvé pour le département ${department}.`);
+        } else if (searchType === "department_level") {
+          setInfoMessage(`Aucun questionnaire trouvé pour le département ${department} et le niveau ${level}.`);
+        } else {
+          setInfoMessage("Aucun cours trouvé.");
+        }
+      }
+    } catch (err) {
       setError(err.message);
+      setForms([]);
     } finally {
       setLoading(false);
     }
@@ -96,7 +103,7 @@ const FormManagement = () => {
 
   useEffect(() => {
     if (searchType === "" && department === "" && level === "") {
-      fetchForms(); // Relance la récupération des formulaires après réinitialisation
+      fetchForms(); 
     }
   }, [searchType, department, level]);
 
