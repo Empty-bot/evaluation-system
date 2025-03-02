@@ -1,5 +1,5 @@
 import React from "react";
-import { UserCircle, Users, UserPlus, FilePlus2, Bell, LogOut, FileSpreadsheet } from "lucide-react";
+import { UserCircle, Users, UserPlus, FilePlus2, BookText, LogOut, FileSpreadsheet } from "lucide-react";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -77,6 +77,18 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
           >
             <FilePlus2 className="w-5 h-5" />
             <span>Nouveau formulaire</span>
+          </a>
+          <a
+            href="#"
+            onClick={() => setActiveSection("new-course")}
+            className={`flex items-center space-x-2 p-2 rounded ${
+              activeSection === "new-form"
+                ? "text-blue-600 bg-blue-50"
+                : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+            }`}
+          >
+            <BookText className="w-5 h-5" />
+            <span>Nouveau cours</span>
           </a>
         </nav>
       </div>

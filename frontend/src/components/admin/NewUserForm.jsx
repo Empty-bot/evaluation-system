@@ -20,6 +20,19 @@ const NewUserForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
+  const isFormValid = () => {
+    return (
+      formData.first_name && 
+      formData.surname && 
+      formData.email && 
+      formData.role && 
+      formData.department &&
+      formData.password && 
+      formData.confirmPassword && 
+      formData.password === formData.confirmPassword
+    );
+  };
+  
   const handleCreateUser = async () => {
     try {
       const token = localStorage.getItem("token");    
@@ -34,7 +47,7 @@ const NewUserForm = () => {
           surname: formData.surname,
           email: formData.email,
           role: formData.role,
-          department: formData.department || null,
+          department: formData.department,
           password: formData.password,
         }),
       });
@@ -116,7 +129,7 @@ const NewUserForm = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Département (facultatif)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Département</label>
           <input type="text" placeholder="Entrez le département de l'utilisateur" value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
         </div>
 
@@ -144,7 +157,11 @@ const NewUserForm = () => {
           {formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword && <p className="text-red-500 text-sm">Les mots de passe ne correspondent pas.</p>}
         </div>
 
-        <button type="submit" disabled={formLoading || formData.password !== formData.confirmPassword} className={`px-4 py-2 rounded-lg w-full ${formLoading || formData.password !== formData.confirmPassword ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}>
+        <button 
+          type="submit" 
+          disabled={formLoading || !isFormValid()} 
+          className={`px-4 py-2 rounded-lg w-full ${formLoading || !isFormValid() ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+        >
           {formLoading ? "Création..." : "Créer l'utilisateur"}
         </button>
       </form>
