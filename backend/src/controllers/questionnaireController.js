@@ -27,7 +27,7 @@ const questionnaireController = {
             } else {
                 return res.status(403).json({ error: "Accès refusé." });
             }
-            res.json(questionnaires);
+            res.json({ data: questionnaires });
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
         }
@@ -57,10 +57,10 @@ const questionnaireController = {
             const questionnaires = await Questionnaire.findByDepartment(department);
     
             if (!questionnaires || questionnaires.length === 0) {
-                return res.status(404).json({ error: "Aucun questionnaire trouvé pour ce département." });
+                return res.json({ message: "Aucun questionnaire trouvé pour ce département.", data: [] });
             }
 
-            res.json(questionnaires);
+            res.json({ data: questionnaires });
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
         }
@@ -77,10 +77,10 @@ const questionnaireController = {
             const questionnaires = await Questionnaire.findByDepartmentAndLevel(department, level);
     
             if (!questionnaires || questionnaires.length === 0) {
-                return res.status(404).json({ error: "Aucun questionnaire trouvé pour ce département et ce niveau." });
+                return res.json({ message: "Aucun questionnaire trouvé pour ce département et ce niveau.", data: [] });
             }
     
-            res.json(questionnaires);
+            res.json({ data: questionnaires });
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération des questionnaires." });
         }

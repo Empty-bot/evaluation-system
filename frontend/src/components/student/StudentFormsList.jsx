@@ -18,6 +18,18 @@ const StudentFormsList = () => {
     return translations[status] || status;
   };
 
+  function formatDeadline(isoString) {
+    const date = new Date(isoString);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  }
+
   const fetchForms = async () => {
     setLoading(true);
     setError(null);
@@ -36,7 +48,7 @@ const StudentFormsList = () => {
       }
 
       const data = await response.json();
-      setForms(data);
+      setForms(data.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -81,6 +93,7 @@ const StudentFormsList = () => {
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Délai</th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -94,6 +107,7 @@ const StudentFormsList = () => {
                 <td className="px-4 py-2 whitespace-nowrap">{form.title}</td>
                 <td className="px-4 py-2 whitespace-nowrap">{form.description}</td>
                 <td className="px-4 py-2 whitespace-nowrap">{form.status ? translateStatus(form.status) : ''}</td>
+                <td className="px-4 py-2 whitespace-nowrap">{form.deadline ? formatDeadline(form.deadline) : ''}</td>
                 <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                   <button
                     className="text-blue-600 hover:text-blue-900 p-1 rounded bg-transparent border-none" 
