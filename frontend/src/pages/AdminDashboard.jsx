@@ -6,6 +6,7 @@ import Sidebar from '../components/admin/Sidebar';
 import NewUserForm from '../components/admin/NewUserForm';
 import NewForm from '../components/admin/NewForm';
 import EditProfile from '../components/admin/EditProfile';
+import CourseManagement from '../components/admin/CourseManagement';
 import NewCourse from '../components/admin/NewCourse';
 
 const AdminDashboard = () => {
@@ -24,8 +25,10 @@ const AdminDashboard = () => {
         return <NewForm />;
       case 'edit-profile' :
         return <EditProfile />;
+      case 'courses' :
+        return <CourseManagement />;  
       case 'new-course' :
-        return <NewCourse />;  
+        return <NewCourse />; 
       default:
         return (
           <div className="bg-white rounded-lg shadow-lg p-6">
