@@ -11,18 +11,18 @@ class Course {
         return rows[0] || null;
     }
 
-    static async create({ code, name, department }) {
+    static async create({ code, name, department, level }) {
         const [result] = await pool.execute(
-            'INSERT INTO courses (code, name, department) VALUES (?, ?, ?)',
-            [code, name, department]
+            'INSERT INTO courses (code, name, department, level) VALUES (?, ?, ?, ?)',
+            [code, name, department, level]
         );
         return result.insertId;
     }
 
-    static async update(id, { code, name, department }) {
+    static async update(id, { code, name, department, level }) {
         const [result] = await pool.execute(
-            'UPDATE courses SET code = ?, name = ?, department = ? WHERE id = ?',
-            [code, name, department, id]
+            'UPDATE courses SET code = ?, name = ?, department = ?, level = ? WHERE id = ?',
+            [code, name, department, level, id]
         );
         return result.affectedRows > 0;
     }

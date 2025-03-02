@@ -24,19 +24,18 @@ const courseController = {
 
     async createCourse(req, res) {
         try {
-            const { code, name, department } = req.body;
-            const courseId = await Course.create({ code, name, department });
+            const { code, name, department, level } = req.body;
+            const courseId = await Course.create({ code, name, department, level });
             res.status(201).json({ message: "Cours créé avec succès.", id: courseId });
         } catch (error) {
-            console.error("❌ Erreur lors de la création du cours :", error);
             res.status(500).json({ error: "Erreur lors de la création du cours." });
         }
     },
 
     async updateCourse(req, res) {
         try {
-            const { code, name, department } = req.body;
-            const updated = await Course.update(req.params.id, { code, name, department });
+            const { code, name, department, level } = req.body;
+            const updated = await Course.update(req.params.id, { code, name, department, level });
 
             if (!updated) {
                 return res.status(404).json({ error: "Cours non trouvé." });
