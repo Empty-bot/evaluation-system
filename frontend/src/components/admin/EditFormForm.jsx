@@ -504,7 +504,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
               />
               {formErrors.title && (
                 <p className="text-red-500 text-sm mt-1">
-                  Le titre du questionnaire est obligatoire
+                  Le titre du questionnaire est requis
                 </p>
               )}
             </div>
@@ -519,7 +519,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
               />
               {formErrors.courseId && (
                 <p className="text-red-500 text-sm mt-1">
-                  L'ID du cours est obligatoire
+                  L'ID du cours est requis
                 </p>
               )}
             </div>
@@ -533,7 +533,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
               />
               {formErrors.description && (
                 <p className="text-red-500 text-sm mt-1">
-                  La description du questionnaire est obligatoire
+                  La description du questionnaire est requis
                 </p>
               )}
             </div>
@@ -579,7 +579,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
                 />
                 {question.hasEmptyLabel && (
                   <p className="text-red-500 text-sm mt-1">
-                    Le libellé de la question est obligatoire
+                    Le libellé de la question est requis
                   </p>
                 )}
               </div>
@@ -617,8 +617,8 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
                         </button>
                       )}
                       {(!option || option.trim() === '') && (
-                        <p className="text-red-500 text-sm absolute -bottom-2 left-2">
-                          L'option ne peut pas être vide
+                        <p className="text-red-500 text-sm mt-1 mb-1">
+                          Les options ne peuvent pas être vides
                         </p>
                       )}
                     </div>
