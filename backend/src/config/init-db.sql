@@ -101,3 +101,7 @@ ADD deadline DATETIME;
 
 ALTER TABLE courses MODIFY COLUMN department ENUM('DSTI', 'DGAE', 'DGO', 'DU2ADT', 'DST2AN') NOT NULL;
 ALTER TABLE courses ADD COLUMN level ENUM('Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2') NOT NULL;
+
+ALTER TABLE users
+ADD COLUMN reset_token VARCHAR(255) NULL,
+ADD COLUMN reset_token_expiry BIGINT NULL;
