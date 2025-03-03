@@ -103,6 +103,33 @@ class Users {
         const [rows] = await pool.execute('SELECT password FROM users WHERE id = ?', [id]);
         return rows[0]?.password || null;
     }
+
+    static async storeResetToken(userId, resetToken, resetTokenExpiry) {
+        await pool.execute(
+          'UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?',
+          [resetToken, resetTokenExpiry, userId]
+        );
+        return true;
+      }
+    
+      static async findByResetToken(resetToken) {
+        const [rows] = await pool.execute(
+          'SELECT * FROM users WHERE reset_token = ?',
+          [resetToken]
+        );
+        return rows[0];
+      }
+    
+      static async updatePassword(userId, newPassword) {
+        // Hacher le nouveau mot de passe
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        
+        await pool.execute(
+          'UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?',
+          [hashedPassword, userId]
+        );
+        return true;
+      }
     
 }
 

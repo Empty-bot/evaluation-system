@@ -8,6 +8,9 @@ router.post('/register', auth, checkRole(['admin']), authController.register);
 //router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post("/verify-password", auth, verifyPasswdController.verifyPassword);
+router.post('/forgot-password', authController.forgotPassword);
+router.get('/reset-password/:token', authController.verifyResetToken);
+router.post('/reset-password/:token', authController.resetPassword);
 
 // Route protégée de test
 router.get('/me', auth, (req, res) => {
