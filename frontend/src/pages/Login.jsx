@@ -150,6 +150,7 @@ const Login = () => {
           {/* Conteneur pour le bouton et le lien */}
           <div className="flex items-center justify-between mt-6 md:mt-8">
             <a
+              onClick={() => navigate('/forgot-password')}
               href="#"
               className="text-sm text-gray-500 hover:text-[#993921]"
             >
