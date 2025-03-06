@@ -110,7 +110,7 @@ const StudentFormsList = () => {
                 <td className="px-4 py-2 whitespace-nowrap">{form.deadline ? formatDeadline(form.deadline) : ''}</td>
                 <td className="px-4 py-2 whitespace-nowrap flex space-x-2">
                   <button
-                    className="text-blue-600 hover:text-blue-900 p-1 rounded bg-transparent border-none" 
+                    className="text-[#993921] hover:text-[#7a2712] p-1 rounded bg-transparent border-none" 
                     onClick={(event) => handleClick(event, form)}
                     title="Répondre"
                   >

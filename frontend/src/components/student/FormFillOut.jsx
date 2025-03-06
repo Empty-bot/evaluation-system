@@ -266,7 +266,7 @@ const FormFillOut = ({ form, onBack }) => {
         <button 
             type="button" 
             onClick={onBack} 
-            className="mb-1 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
+            className="mb-1 p-2 bg-gray-100 hover:bg-[#993921] hover:text-white text-gray rounded-lg"
         >
             <CircleArrowLeft className="w-5 h-5" />
         </button>
@@ -317,7 +317,7 @@ const FormFillOut = ({ form, onBack }) => {
           disabled={!areAllQuestionsAnswered() || submitLoading}
           className={`px-6 py-2 rounded-md ${
             areAllQuestionsAnswered()
-              ? "bg-blue-600 text-white hover:bg-blue-700"
+              ? "bg-[#993921] text-white hover:bg-[#7a2712]"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
         >
@@ -337,7 +337,7 @@ const FormFillOut = ({ form, onBack }) => {
               <button
                 onClick={handleSubmit}
                 disabled={submitLoading}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                className="px-4 py-2 bg-[#993921] hover:bg-[#7a2712] text-white rounded-lg"
               >
                 {submitLoading ? "Traitement..." : "Oui, confirmer"}
               </button>

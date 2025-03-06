@@ -268,16 +268,16 @@ const EditProfile = () => {
       <div className="flex mb-6 justify-center items-center">
         <button
           className={`py-2 px-4 font-medium mr-2 ${activeTab === 'personal' 
-            ? "text-blue-600 bg-blue-50" 
-            : "text-gray-700 hover:text-blue-600 bg-white hover:bg-blue-50"}`}
+            ? "text-[#993921] bg-[#f5e0db]" 
+            : "text-gray-700 hover:text-[#993921] bg-white hover:bg-[#f5e0db]"}`} 
           onClick={() => handleTabChange('personal')}
         >
           Changer mes infos
         </button>
         <button
           className={`py-2 px-4 font-medium ${activeTab === 'password' 
-            ? "text-blue-600 bg-blue-50" 
-            : "text-gray-700 hover:text-blue-600 bg-white hover:bg-blue-50"}`}
+            ? "text-[#993921] bg-[#f5e0db]" 
+            : "text-gray-700 hover:text-[#993921] bg-white hover:bg-[#f5e0db]"}`}
           onClick={() => handleTabChange('password')}
         >
           Changer mon mot de passe
@@ -309,7 +309,7 @@ const EditProfile = () => {
               value={personalData.first_name}
               onChange={(e) => setPersonalData({ ...personalData, first_name: e.target.value })}
               required
-              className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a1432b] w-full"
             />
           </div>
           
@@ -321,7 +321,7 @@ const EditProfile = () => {
               value={personalData.surname}
               onChange={(e) => setPersonalData({ ...personalData, surname: e.target.value })}
               required
-              className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a1432b] w-full"
             />
           </div>
           
@@ -332,7 +332,7 @@ const EditProfile = () => {
               placeholder="Entrez votre département"
               value={personalData.department}
               onChange={(e) => setPersonalData({ ...personalData, department: e.target.value })}
-              className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a1432b] w-full"
             />
           </div>
           
@@ -340,7 +340,7 @@ const EditProfile = () => {
             type="submit"
             disabled={formLoading || !isPersonalFormValid()}
             className={`px-4 py-2 rounded-lg w-full ${
-              formLoading || !isPersonalFormValid() ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+              formLoading || !isPersonalFormValid() ? "bg-gray-400 cursor-not-allowed" : "bg-[#993921] text-white hover:bg-[#7a2712]"
             }`}
           >
             {formLoading ? "Mise à jour..." : "Mettre à jour mes informations"}
@@ -362,7 +362,7 @@ const EditProfile = () => {
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                 required
                 disabled={isPasswordVerified}
-                className={`border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full pr-10 ${
+                className={`border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a1432b] w-full pr-10 ${
                   isPasswordVerified ? "bg-gray-100" : ""
                 }`}
               />
@@ -388,7 +388,7 @@ const EditProfile = () => {
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                     required
-                    className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full pr-10"
+                    className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a1432b] w-full pr-10"
                   />
                   <button
                     type="button"
@@ -409,7 +409,7 @@ const EditProfile = () => {
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                     required
-                    className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full pr-10"
+                    className="border bg-white border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a1432b] w-full pr-10"
                   />
                   <button
                     type="button"
@@ -433,7 +433,7 @@ const EditProfile = () => {
             className={`px-4 py-2 rounded-lg w-full ${
               formLoading || !isPasswordFormValid() || (isPasswordVerified && passwordData.newPassword !== passwordData.confirmPassword)
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-[#993921] text-white hover:bg-[#7a2712]"
             }`}
           >
             {formLoading 
@@ -467,7 +467,7 @@ const EditProfile = () => {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={confirmAction}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                className="px-4 py-2 bg-[#993921] hover:bg-[#7a2712] text-white rounded-lg"
               >
                 Oui
               </button>

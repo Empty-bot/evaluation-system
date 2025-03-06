@@ -34,7 +34,7 @@ const StudentDashboard = () => {
           <main className="p-8 bg-gray-100 min-h-screen pb-24">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
-              className="lg:hidden mb-4 p-2 bg-blue-600 text-white rounded"
+              className="lg:hidden mb-4 p-2 bg-[#993921] text-white rounded"
             >
               {isSidebarOpen ? <PanelRightOpen className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
             </button>

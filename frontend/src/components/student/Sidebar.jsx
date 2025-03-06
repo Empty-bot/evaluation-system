@@ -32,8 +32,8 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
                 onClick={() => setActiveSection("edit-profile")}
                 className={`flex items-center space-x-2 mb-8 p-2 rounded -mx-2 ${
                 activeSection === "edit-profile"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                    ? "text-[#993921] hover:text-[#993921] bg-[#f5e0db]"
+                    : "text-gray-700 hover:text-[#993921] hover:bg-[#f5e0db]"
                 }`}
             >
                 <UserCircle className="w-6 h-6" />
@@ -47,8 +47,8 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
                 onClick={() => setActiveSection("forms")}
                 className={`flex items-center space-x-2 p-2 rounded ${
                 activeSection === "forms"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                    ? "text-[#993921] hover:text-[#993921] bg-[#f5e0db]"
+                    : "text-gray-700 hover:text-[#993921] hover:bg-[#f5e0db]"
                 }`}
             >
                 <FileSpreadsheet className="w-5 h-5" />
@@ -78,7 +78,7 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={confirmLogout}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                className="px-4 py-2 bg-[#993921] hover:bg-[#7a2712] text-white rounded-lg"
               >
                 Oui
               </button>
