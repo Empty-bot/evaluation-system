@@ -16,6 +16,20 @@ const authController = {
 
             // Créer le nouvel utilisateur
             const userId = await Users.create({ email, password, role, department, first_name, surname });
+
+            // Contenu de l'email
+            const subject = 'Création de compte utilisateur';
+            const text = `
+        Bonjour,
+
+        Un compte utilisateur a été créé sur la plateforme d'évaluation des enseignements de Polytech Diamniadio avec cet adresse email.
+
+        Cordialement,
+        L'équipe de la plateforme d'évaluation des enseignements - Polytech Diamniadio
+            `;
+            
+            // Envoyer l'email avec votre fonction existante
+            await sendEmail(email, subject, text);
             
             res.status(201).json({ message: 'Utilisateur créé avec succès.' });
         } catch (error) {

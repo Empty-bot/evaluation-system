@@ -28,7 +28,6 @@ const userController = {
             const users = await Users.findByEmail(email);
             res.json(users);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des utilisateurs par email :", error);
             res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs." });
         }
     },
@@ -39,7 +38,6 @@ const userController = {
             const users = await Users.searchByEmail(email);
             res.json(users);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des utilisateurs par email :", error);
             res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs." });
         }
     },
@@ -50,7 +48,6 @@ const userController = {
             const students = await Users.findByCourse(id);
             res.json(students);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des étudiants :", error);
             res.status(500).json({ error: "Erreur lors de la récupération des étudiants du cours." });
         }
     },
@@ -61,7 +58,6 @@ const userController = {
             const users = await Users.findByRole(role);
             res.json(users);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des utilisateurs par rôle :", error);
             res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs." });
         }
     },
@@ -123,7 +119,6 @@ const userController = {
     
             res.json({ message: "Mot de passe mis à jour avec succès." });
         } catch (error) {
-            console.log(error);
             res.status(500).json({ error: "Erreur lors de la mise à jour du mot de passe." });
         }
     },
