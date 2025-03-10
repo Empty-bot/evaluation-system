@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const Users = require('../models/Users'); // Modèle utilisateur
+const Users = require('../models/Users'); 
 
 const verifyPasswdController = {
     async verifyPassword(req, res) {
@@ -9,8 +9,12 @@ const verifyPasswdController = {
 
             // Vérifier si l'utilisateur existe
             const user = await Users.findByIdPrime(userId);
-            if (!user) {
-                return res.status(404).json({ error: "Utilisateur non trouvé." });
+            if (!user || !user.password) {
+                return res.status(404).json({ error: " Mot de passe utilisateur non trouvé." });
+            }
+
+            if (!currentPassword) {
+                return res.status(400).json({ error: "Le mot de passe actuel est requis." });
             }
 
             // Comparer le mot de passe fourni avec celui stocké

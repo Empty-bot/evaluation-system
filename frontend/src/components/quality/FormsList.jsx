@@ -16,6 +16,7 @@ const FormsList = () => {
   const [searchType, setSearchType] = useState("");
   const [department, setDepartment] = useState("");
   const [level, setLevel] = useState("");
+  const [code, setCode] = useState("");
 
   const translateStatus = (status) => {
     const translations = {

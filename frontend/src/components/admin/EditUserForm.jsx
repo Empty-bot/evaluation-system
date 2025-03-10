@@ -149,7 +149,7 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ adminId: adminId, password: formData.adminPassword }),
+        body: JSON.stringify({ currentPassword: formData.adminPassword }),
       });
   
       if (!response.ok) {
