@@ -1,0 +1,3 @@
+backend/logs/combined.log
+.env
+.env.*
