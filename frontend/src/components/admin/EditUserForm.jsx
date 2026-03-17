@@ -334,3 +334,5 @@ const EditUserForm = ({ userId, onCancel, onUpdateUser }) => {
     </div>
   );
 };
+
+export default EditUserForm;

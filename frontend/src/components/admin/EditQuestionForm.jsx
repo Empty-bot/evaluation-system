@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Trash2, Plus, CircleArrowLeft } from 'lucide-react';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import React, { useState, useEffect } from "react";
+import { Trash2, Plus, CircleArrowLeft } from "lucide-react";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import API_URL from "../../config/api";
 
-const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => {
+const EditQuestionForm = ({
+  questionLabel,
+  questionId,
+  onCancel,
+  onUpdate,
+}) => {
   // États
   const [formData, setFormData] = useState({
     label: "",
     type: "",
-    possible_answers: []
+    possible_answers: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,18 +27,21 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`${API_URL}/api/questions/${questionId}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!response.ok) throw new Error("Erreur lors du chargement de la question");
+        if (!response.ok)
+          throw new Error("Erreur lors du chargement de la question");
 
         const data = await response.json();
         setFormData({
           label: data.label || "",
           type: data.type || "",
-          possible_answers: Array.isArray(data.possible_answers) 
-            ? data.possible_answers 
-            : data.possible_answers ? JSON.parse(data.possible_answers) : []
+          possible_answers: Array.isArray(data.possible_answers)
+            ? data.possible_answers
+            : data.possible_answers
+              ? JSON.parse(data.possible_answers)
+              : [],
         });
       } catch (err) {
         setError(err.message);
@@ -50,37 +58,44 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
     const validateForm = () => {
       // Vérifier que le libellé est rempli
       if (!formData.label.trim()) return false;
-      
+
       // Vérifier que le type est sélectionné
       if (!formData.type) return false;
-      
+
       // Pour les questions à choix, vérifier qu'il y a au moins deux options valides
-      if (formData.type === "multiple_choice" || formData.type === "single_choice") {
-        const validAnswers = formData.possible_answers.filter(answer => answer.trim());
+      if (
+        formData.type === "multiple_choice" ||
+        formData.type === "single_choice"
+      ) {
+        const validAnswers = formData.possible_answers.filter((answer) =>
+          answer.trim(),
+        );
         if (validAnswers.length < 2) return false;
       }
-      
+
       return true;
     };
-    
+
     setIsFormValid(validateForm());
   }, [formData]);
 
   // Handlers
   const handleTypeChange = (e) => {
     const newType = e.target.value;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       type: newType,
       // Initialisation de possibles réponses selon le type
-      possible_answers: newType === 'text' ? [] : ["", ""]
+      possible_answers: newType === "text" ? [] : ["", ""],
     }));
   };
 
   const handleAnswerChange = (index, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      possible_answers: prev.possible_answers.map((ans, i) => i === index ? value : ans)
+      possible_answers: prev.possible_answers.map((ans, i) =>
+        i === index ? value : ans,
+      ),
     }));
   };
 
@@ -93,44 +108,53 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
     try {
       setLoading(true);
       setError("");
-  
+
       // Validation des données selon le type
       if (!formData.label.trim()) {
         throw new Error("Le libellé est requis");
       }
-  
+
       let validatedAnswers = [];
-      
-      if (formData.type === "multiple_choice" || formData.type === "single_choice") {
-        validatedAnswers = formData.possible_answers.filter(answer => answer.trim());
+
+      if (
+        formData.type === "multiple_choice" ||
+        formData.type === "single_choice"
+      ) {
+        validatedAnswers = formData.possible_answers.filter((answer) =>
+          answer.trim(),
+        );
         if (validatedAnswers.length < 2) {
-          throw new Error(`Au moins deux réponses valides sont requises pour une question à ${formData.type === "single_choice" ? "choix unique" : "choix multiples"}`);
+          throw new Error(
+            `Au moins deux réponses valides sont requises pour une question à ${formData.type === "single_choice" ? "choix unique" : "choix multiples"}`,
+          );
         }
       }
-  
+
       // Préparation des données pour l'API
       const requestBody = {
         label: formData.label.trim(),
         type: formData.type,
-        possible_answers: formData.type === "text" ? [] : validatedAnswers
+        possible_answers: formData.type === "text" ? [] : validatedAnswers,
       };
-  
+
       // Envoi de la requête
       const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/api/questions/${questionId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erreur lors de la mise à jour de la question");
+        throw new Error(
+          errorData.error || "Erreur lors de la mise à jour de la question",
+        );
       }
-  
+
       // Si tout s'est bien passé, on ferme le popup et on notifie le parent
       setShowConfirmation(false);
       onUpdate();
@@ -141,7 +165,6 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
       setLoading(false);
     }
   };
-  
 
   if (loading) {
     return (
@@ -155,13 +178,15 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
     <div className="space-y-6 max-w-lg mx-auto">
       {/* En-tête avec bouton retour */}
       <div className="flex items-center gap-4">
-        <button 
+        <button
           onClick={onCancel}
           className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
         >
           <CircleArrowLeft className="w-5 h-5" />
         </button>
-        <h2 className="text-xl text-center font-semibold mb-4">Modifier la question "{questionLabel}"</h2>
+        <h2 className="text-xl text-center font-semibold mb-4">
+          Modifier la question "{questionLabel}"
+        </h2>
       </div>
 
       {/* Message d'erreur */}
@@ -182,7 +207,9 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
           <input
             type="text"
             value={formData.label}
-            onChange={e => setFormData(prev => ({ ...prev, label: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, label: e.target.value }))
+            }
             className="border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Saisissez votre question"
             required
@@ -191,9 +218,7 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
 
         {/* Type de question */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">
-            Type de question
-          </label>
+          <label className="block text-sm font-medium">Type de question</label>
           <select
             value={formData.type}
             onChange={handleTypeChange}
@@ -208,31 +233,36 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
         </div>
 
         {/* Réponses possibles (conditionnelles) */}
-        {formData.type !== 'text' && (
+        {formData.type !== "text" && (
           <div className="space-y-4">
             <label className="block text-sm font-medium">
               Réponses possibles
             </label>
-            
+
             <div className="space-y-3">
               {formData.possible_answers.map((answer, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <input
                     type="text"
                     value={answer}
-                    onChange={e => handleAnswerChange(index, e.target.value)}
+                    onChange={(e) => handleAnswerChange(index, e.target.value)}
                     className="flex-1 border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder={`Option ${index + 1}`}
                     required
                   />
-                  
+
                   {/* Afficher le bouton de suppression si plus de 2 options */}
                   {formData.possible_answers.length > 2 && (
                     <button
                       type="button"
                       onClick={() => {
-                        const newAnswers = formData.possible_answers.filter((_, i) => i !== index);
-                        setFormData(prev => ({ ...prev, possible_answers: newAnswers }));
+                        const newAnswers = formData.possible_answers.filter(
+                          (_, i) => i !== index,
+                        );
+                        setFormData((prev) => ({
+                          ...prev,
+                          possible_answers: newAnswers,
+                        }));
                       }}
                       className="text-red-600 hover:text-red-900 p-2 rounded bg-transparent border-none ml-2"
                     >
@@ -247,14 +277,14 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
             <button
               type="button"
               onClick={() => {
-                setFormData(prev => ({
+                setFormData((prev) => ({
                   ...prev,
-                  possible_answers: [...prev.possible_answers, ""]
+                  possible_answers: [...prev.possible_answers, ""],
                 }));
               }}
               className="px-2 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
             >
-              <Plus className="w-4 h-4"/>
+              <Plus className="w-4 h-4" />
             </button>
           </div>
         )}
@@ -267,7 +297,7 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
             className={`flex-1 px-4 py-2 text-white rounded-lg ${
               isFormValid
                 ? "bg-blue-600 hover:bg-blue-700"
-                : 'bg-gray-400 cursor-not-allowed' 
+                : "bg-gray-400 cursor-not-allowed"
             }`}
           >
             Enregistrer les modifications
@@ -279,7 +309,9 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
       {showConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
-            <h3 className="text-lg font-medium mb-4">Confirmer les modifications ?</h3>
+            <h3 className="text-lg font-medium mb-4">
+              Confirmer les modifications ?
+            </h3>
             <div className="flex gap-4 justify-end">
               <button
                 onClick={() => setShowConfirmation(false)}
@@ -292,9 +324,9 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
                 onClick={submitForm}
                 disabled={loading}
                 className={`px-4 py-2 text-white rounded-lg ${
-                  loading 
-                  ? "bg-blue-400 cursor-not-allowed" 
-                  : "bg-blue-600 hover:bg-blue-700"
+                  loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
                 {loading ? "Modification en cours..." : "Confirmer"}
@@ -307,3 +339,4 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
   );
 };
 
+export default EditQuestionForm;

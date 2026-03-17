@@ -1,7 +1,15 @@
 import React, { useState, useContext } from "react";
-import { UserCircle, Users, UserPlus, FilePlus2, BookText, BookPlus, LogOut, FileSpreadsheet } from "lucide-react";
+import {
+  UserCircle,
+  Users,
+  UserPlus,
+  FilePlus2,
+  BookText,
+  BookPlus,
+  LogOut,
+  FileSpreadsheet,
+} from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
-import API_URL from "../../config/api";
 
 const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem("user")); // Récupérer l'utilisateur depuis le stockage local
@@ -132,7 +140,9 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
       {showLogoutConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg mb-4">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+            <p className="text-lg mb-4">
+              Êtes-vous sûr de vouloir vous déconnecter ?
+            </p>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={confirmLogout}
@@ -154,3 +164,4 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   );
 };
 
+export default Sidebar;

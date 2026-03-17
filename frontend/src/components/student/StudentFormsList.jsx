@@ -142,3 +142,5 @@ const StudentFormsList = () => {
     </div>
   );
 };
+
+export default StudentFormsList;

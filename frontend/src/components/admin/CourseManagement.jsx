@@ -347,3 +347,5 @@ const CourseManagement = () => {
     </div>
   );
 };
+
+export default CourseManagement;

@@ -19,16 +19,13 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const response = await fetch(
-        `${API_URL}/api/auth/forgot-password`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
+      const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ email }),
+      });
 
       const data = await response.json();
       if (!response.ok) {
@@ -119,3 +116,5 @@ const ForgotPassword = () => {
     </div>
   );
 };
+
+export default ForgotPassword;

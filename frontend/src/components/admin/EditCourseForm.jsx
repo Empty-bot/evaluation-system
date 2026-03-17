@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import { CircleArrowLeft } from "lucide-react"; // Assurez-vous d'importer l'icône
 import API_URL from "../../config/api";
 
@@ -9,7 +9,7 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
     name: "",
     code: "",
     department: "",
-    level: ""
+    level: "",
   });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -28,7 +28,9 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
         });
 
         if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des informations du cours.");
+          throw new Error(
+            "Erreur lors de la récupération des informations du cours.",
+          );
         }
 
         const data = await response.json();
@@ -70,11 +72,13 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erreur lors de la mise à jour du cours.");
+        throw new Error(
+          errorData.error || "Erreur lors de la mise à jour du cours.",
+        );
       }
 
       setSuccess("Cours mis à jour avec succès !");
-      
+
       // Attendre un peu avant de fermer le formulaire pour que l'utilisateur voie le message de succès
       setTimeout(() => {
         onUpdateCourse();
@@ -104,29 +108,31 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
     <div>
       <div className="space-y-6 max-w-lg mx-auto">
         <div className="flex items-center gap-4">
-          <button 
-            type="button" 
-            onClick={onCancel} 
+          <button
+            type="button"
+            onClick={onCancel}
             className="mb-4 p-2 bg-gray-100 hover:bg-blue-600 hover:text-white text-gray rounded-lg"
           >
             <CircleArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-xl text-center font-semibold mb-4">Modifier le cours {courseName}</h2>
+          <h2 className="text-xl text-center font-semibold mb-4">
+            Modifier le cours {courseName}
+          </h2>
         </div>
-        
+
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
             <AlertTitle>Erreur</AlertTitle>
             {error}
           </Alert>
         )}
-        
+
         {success && (
           <Alert severity="success" sx={{ mb: 3 }}>
             {success}
           </Alert>
         )}
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -142,7 +148,7 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
               className="border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Code du Cours
@@ -157,7 +163,7 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
               className="border bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Département
@@ -177,7 +183,7 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
               <option value="DST2AN">DST2AN</option>
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Niveau
@@ -197,7 +203,7 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
               <option value="Master 2">Master 2</option>
             </select>
           </div>
-          
+
           <div>
             <button
               type="submit"
@@ -213,3 +219,4 @@ const EditCourseForm = ({ courseName, courseId, onCancel, onUpdateCourse }) => {
   );
 };
 
+export default EditCourseForm;

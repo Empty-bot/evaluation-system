@@ -1,12 +1,10 @@
 import React, { useState, useContext } from "react";
 import { UserCircle, LogOut, FileSpreadsheet } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
-import API_URL from "../../config/api";
-
 
 const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem("user")); // Récupérer l'utilisateur depuis le stockage local
-  const userName = user ? `${user.first_name} ${user.surname}` : "Utilisateur"; // Afficher le prénom et le nom ou un texte par défaut  
+  const userName = user ? `${user.first_name} ${user.surname}` : "Utilisateur"; // Afficher le prénom et le nom ou un texte par défaut
   const { logout } = useContext(AuthContext);
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
@@ -41,7 +39,6 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
             <span className="text-lg font-semibold">{userName}</span>
           </a>
           <nav className="space-y-4">
-
             <a
               href="#"
               onClick={() => setActiveSection("forms")}
@@ -54,7 +51,6 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
               <FileSpreadsheet className="w-5 h-5" />
               <span>Formulaires</span>
             </a>
-
           </nav>
         </div>
 
@@ -74,7 +70,9 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
       {showLogoutConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg mb-4">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+            <p className="text-lg mb-4">
+              Êtes-vous sûr de vouloir vous déconnecter ?
+            </p>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={confirmLogout}
@@ -92,7 +90,7 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
           </div>
         </div>
       )}
-    </>  
+    </>
   );
 };
 
