@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, CirclePlus, Trash2, X, Calendar, CircleArrowLeft } from 'lucide-react';
 import { Alert } from '@mui/material';
+import API_URL from "../../config/api";
 
 const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
   const [formTitle, setFormTitle] = useState('');
@@ -95,7 +96,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
         const token = localStorage.getItem("token");
         
         // Récupérer les infos du formulaire
-        const formResponse = await fetch(`http://localhost:3001/api/questionnaires/${formId}`, {
+        const formResponse = await fetch(`${API_URL}/api/questionnaires/${formId}`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -121,7 +122,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
         setDeadline(formattedDeadline);
         
         // Récupération des questions pour ce formulaire
-        const questionsResponse = await fetch(`http://localhost:3001/api/questions/questionnaire/${form.id}`, {
+        const questionsResponse = await fetch(`${API_URL}/api/questions/questionnaire/${form.id}`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -184,7 +185,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
   const confirmDeleteQuestion = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:3001/api/questions/${questionToDelete.id}`, {
+      const response = await fetch(`${API_URL}/api/questions/${questionToDelete.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -346,7 +347,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
       const token = localStorage.getItem("token");
       
       // Mettre à jour les infos formulaire
-      const formResponse = await fetch(`http://localhost:3001/api/questionnaires/${formId}`, {
+      const formResponse = await fetch(`${API_URL}/api/questionnaires/${formId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -365,7 +366,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
       
       // Mettre à jour les questions existantes
       await Promise.all(questions.map(question => 
-        fetch(`http://localhost:3001/api/questions/${question.id}`, {
+        fetch(`${API_URL}/api/questions/${question.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -381,7 +382,7 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
       
       // Créer les nouvelles questions
       await Promise.all(newQuestions.map(question => 
-        fetch('http://localhost:3001/api/questions', {
+        fetch('${API_URL}/api/questions', {
           method: 'POST',
           headers: { 
             "Content-Type": "application/json",
@@ -770,4 +771,3 @@ const EditFormForm = ({ formId, onCancel, onUpdateForm }) => {
   );
 };
 
-export default EditFormForm;

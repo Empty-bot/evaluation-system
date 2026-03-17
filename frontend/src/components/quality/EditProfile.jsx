@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Alert, AlertTitle } from '@mui/material';
+import API_URL from "../../config/api";
 
 const EditProfile = () => {
   const [activeTab, setActiveTab] = useState('personal');
@@ -77,7 +78,7 @@ const EditProfile = () => {
       const user = JSON.parse(localStorage.getItem('user')) || {};
       const token = getAuthToken();
       
-      const response = await fetch('http://localhost:3001/api/auth/verify-password', {
+      const response = await fetch('${API_URL}/api/auth/verify-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +134,7 @@ const EditProfile = () => {
       
       console.log("Submitting for user ID:", userId, "Type:", typeof userId);
       
-      const response = await fetch(`http://localhost:3001/api/users/updatePersonal/${userId}`, {
+      const response = await fetch(`${API_URL}/api/users/updatePersonal/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +193,7 @@ const EditProfile = () => {
       
       const userId = user.id;
       
-      const response = await fetch(`http://localhost:3001/api/users/updatePassword/${userId}`, {
+      const response = await fetch(`${API_URL}/api/users/updatePassword/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -485,4 +486,3 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;

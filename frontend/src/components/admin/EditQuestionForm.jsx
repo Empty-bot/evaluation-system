@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trash2, Plus, CircleArrowLeft } from 'lucide-react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import API_URL from "../../config/api";
 
 const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => {
   // États
@@ -20,7 +21,7 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
     const fetchQuestion = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3001/api/questions/${questionId}`, {
+        const response = await fetch(`${API_URL}/api/questions/${questionId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -116,7 +117,7 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
   
       // Envoi de la requête
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:3001/api/questions/${questionId}`, {
+      const response = await fetch(`${API_URL}/api/questions/${questionId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -306,4 +307,3 @@ const EditQuestionForm = ({ questionLabel, questionId, onCancel, onUpdate }) => 
   );
 };
 
-export default EditQuestionForm;

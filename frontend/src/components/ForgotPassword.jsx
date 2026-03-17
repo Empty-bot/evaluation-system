@@ -1,39 +1,43 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import logo from "../assets/LOGOUAM.png";
+import API_URL from "../config/api";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setMessage('');
-    
+    setError("");
+    setMessage("");
+
     try {
-      const response = await fetch(`http://localhost:3001/api/auth/forgot-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_URL}/api/auth/forgot-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
         },
-        body: JSON.stringify({ email }),
-      });
-      
+      );
+
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'Une erreur est survenue');
+        throw new Error(data.error || "Une erreur est survenue");
       }
-      
+
       setMessage(data.message);
     } catch (err) {
-      setError(err.message || 'Une erreur est survenue');
+      setError(err.message || "Une erreur est survenue");
     } finally {
       setLoading(false);
     }
@@ -65,7 +69,7 @@ const ForgotPassword = () => {
             {message}
           </Alert>
         )}
-        
+
         {error && (
           <Alert className="w-full" severity="error" sx={{ mb: 3 }}>
             <AlertTitle>Erreur</AlertTitle>
@@ -96,7 +100,7 @@ const ForgotPassword = () => {
           {/* Conteneur pour le bouton et le lien */}
           <div className="flex items-center justify-between mt-6 md:mt-8">
             <a
-              onClick={() => navigate('/login')}
+              onClick={() => navigate("/login")}
               href="#"
               className="text-sm text-gray-500 hover:text-[#993921]"
             >
@@ -115,5 +119,3 @@ const ForgotPassword = () => {
     </div>
   );
 };
-
-export default ForgotPassword;

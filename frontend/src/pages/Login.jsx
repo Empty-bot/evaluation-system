@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react"; 
-import { FaEye, FaEyeSlash } from "react-icons/fa"; 
-import logo from "../assets/LOGOUAM.png"; 
+import React, { useState, useContext } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import logo from "../assets/LOGOUAM.png";
 import { useNavigate } from "react-router-dom";
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import { AuthContext } from "../context/AuthContext"; 
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import { AuthContext } from "../context/AuthContext";
+import API_URL from "../config/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,22 +14,22 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useContext(AuthContext); 
+  const { setUser } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
-      const response = await fetch("http://localhost:3001/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       let data;
       try {
         data = await response.json();
@@ -36,18 +37,18 @@ const Login = () => {
         const text = await response.text();
         throw new Error(text || "Une erreur inconnue s'est produite.");
       }
-  
+
       if (!response.ok) {
         throw new Error(data.error || "Une erreur s'est produite.");
       }
-  
+
       // Stocker le token JWT et mettre à jour le contexte
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      
+
       // Mettre à jour le contexte d'authentification
       setUser(data.user);
-      
+
       // Rediriger en fonction du rôle
       switch (data.user.role) {
         case "admin":
@@ -71,8 +72,7 @@ const Login = () => {
       setLoading(false);
     }
   };
-  
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full">
       <div className="bg-white p-8 md:p-12 rounded-lg shadow-xl w-full max-w-md lg:max-w-xl min-h-[500px] lg:min-h-[600px] flex flex-col items-center">
@@ -150,7 +150,7 @@ const Login = () => {
           {/* Conteneur pour le bouton et le lien */}
           <div className="flex items-center justify-between mt-6 md:mt-8">
             <a
-              onClick={() => navigate('/forgot-password')}
+              onClick={() => navigate("/forgot-password")}
               href="#"
               className="text-sm text-gray-500 hover:text-[#993921]"
             >

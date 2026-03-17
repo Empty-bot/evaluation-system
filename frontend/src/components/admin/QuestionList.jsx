@@ -4,6 +4,7 @@ import ResponseList from "./ResponseList";
 import EditQuestionForm from "./EditQuestionForm";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import API_URL from "../../config/api";
 
 const QuestionList = ({ form, onBack }) => {
   const [questions, setQuestions] = useState([]);
@@ -31,7 +32,7 @@ const QuestionList = ({ form, onBack }) => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3001/api/questions/questionnaire/${form.id}`, {
+        const response = await fetch(`${API_URL}/api/questions/questionnaire/${form.id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -76,7 +77,7 @@ const QuestionList = ({ form, onBack }) => {
   
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:3001/api/questions/${questionToDelete.id}`, {
+      const response = await fetch(`${API_URL}/api/questions/${questionToDelete.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

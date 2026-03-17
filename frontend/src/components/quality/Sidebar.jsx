@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserCircle, LogOut, FileSpreadsheet } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
+import API_URL from "../../config/api";
 
 
 const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {

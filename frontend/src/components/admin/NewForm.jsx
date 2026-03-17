@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, CirclePlus, Trash2, X, Calendar } from 'lucide-react';
 import { Alert } from '@mui/material';
+import API_URL from "../../config/api";
 
 const NewForm = () => {
   const [formTitle, setFormTitle] = useState('');
@@ -150,7 +151,7 @@ const NewForm = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");  
-      const questionnaireResponse = await fetch('http://localhost:3001/api/questionnaires', {
+      const questionnaireResponse = await fetch('${API_URL}/api/questionnaires', {
         method: 'POST',
         headers: { 
             "Content-Type": "application/json",
@@ -170,7 +171,7 @@ const NewForm = () => {
       const questionnaire = await questionnaireResponse.json();
       
       await Promise.all(questions.map(question => 
-        fetch('http://localhost:3001/api/questions', {
+        fetch('${API_URL}/api/questions', {
           method: 'POST',
           headers: { 
             "Content-Type": "application/json",
@@ -422,4 +423,3 @@ const NewForm = () => {
   );
 };
 
-export default NewForm;

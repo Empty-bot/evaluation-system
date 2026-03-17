@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, AlertTitle } from '@mui/material';
+import API_URL from "../../config/api";
 
 const NewCourse = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ const NewCourse = () => {
 
     try {
       const token = localStorage.getItem("token");   
-      const response = await fetch('http://localhost:3001/api/courses/', {
+      const response = await fetch('${API_URL}/api/courses/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,4 +142,3 @@ const NewCourse = () => {
   );
 };
 
-export default NewCourse;

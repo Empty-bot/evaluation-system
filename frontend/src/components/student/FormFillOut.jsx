@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { CircleArrowLeft } from "lucide-react";
+import API_URL from "../../config/api";
 
 const FormFillOut = ({ form, onBack }) => {
   const [questions, setQuestions] = useState([]);
@@ -22,13 +23,13 @@ const FormFillOut = ({ form, onBack }) => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:3001/api/questions/questionnaire/${form.id}`,
+          `${API_URL}/api/questions/questionnaire/${form.id}`,
           {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         if (!response.ok) {
@@ -41,10 +42,18 @@ const FormFillOut = ({ form, onBack }) => {
         // Initialisation des réponses avec des valeurs vides
         const initialAnswers = {};
         data.forEach((question) => {
-          if (question.type === "single_choice" && question.possible_answers && question.possible_answers.length > 0) {
+          if (
+            question.type === "single_choice" &&
+            question.possible_answers &&
+            question.possible_answers.length > 0
+          ) {
             // Pour les questions à choix unique, on n'initialise pas de valeur
             initialAnswers[question.id] = null;
-          } else if (question.type === "multiple_choice" && question.possible_answers && question.possible_answers.length > 0) {
+          } else if (
+            question.type === "multiple_choice" &&
+            question.possible_answers &&
+            question.possible_answers.length > 0
+          ) {
             // Pour les questions à choix multiples, on initialise un tableau vide
             initialAnswers[question.id] = [];
           } else {
@@ -69,7 +78,7 @@ const FormFillOut = ({ form, onBack }) => {
       // Pour les questions à choix multiples
       setAnswers((prevAnswers) => {
         const currentAnswers = [...(prevAnswers[questionId] || [])];
-        
+
         if (currentAnswers.includes(value)) {
           // Si la valeur est déjà sélectionnée, la retirer
           return {
@@ -103,10 +112,11 @@ const FormFillOut = ({ form, onBack }) => {
   const areAllQuestionsAnswered = () => {
     for (const question of questions) {
       if (
-        answers[question.id] === null || 
-        answers[question.id] === undefined || 
+        answers[question.id] === null ||
+        answers[question.id] === undefined ||
         answers[question.id] === "" ||
-        (Array.isArray(answers[question.id]) && answers[question.id].length === 0)
+        (Array.isArray(answers[question.id]) &&
+          answers[question.id].length === 0)
       ) {
         return false;
       }
@@ -129,43 +139,47 @@ const FormFillOut = ({ form, onBack }) => {
     setSubmitLoading(true);
     setSubmitError(null);
     setSubmitSuccess(false);
-  
+
     try {
       const token = localStorage.getItem("token");
-      
+
       // Préparer le tableau de réponses
-      const responsesArray = questions.map(question => ({
+      const responsesArray = questions.map((question) => ({
         question_id: question.id,
-        answer: answers[question.id]
+        answer: answers[question.id],
       }));
-      
+
       // Envoi de toutes les réponses en une seule requête
-      const response = await fetch("http://localhost:3001/api/responses/submitFullQuestionnaire", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${API_URL}/api/responses/submitFullQuestionnaire`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            questionnaire_id: form.id,
+            responses: responsesArray,
+          }),
         },
-        body: JSON.stringify({
-          questionnaire_id: form.id,
-          responses: responsesArray
-        }),
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erreur lors de l'envoi des réponses");
+        throw new Error(
+          errorData.error || "Erreur lors de l'envoi des réponses",
+        );
       }
-      
+
       setSubmitSuccess(true);
       // Fermer le dialogue de confirmation
       setConfirmationOpen(false);
-      
+
       // Rediriger vers la liste des formulaires après un court délai
       setTimeout(() => {
         onBack();
       }, 2000);
-      
     } catch (err) {
       setSubmitError(err.message);
       setConfirmationOpen(false);
@@ -182,10 +196,12 @@ const FormFillOut = ({ form, onBack }) => {
           <textarea
             className="mb-2 border font-semibold bg-white border-gray-300 p-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={answers[question.id] || ""}
-            onChange={(e) => handleAnswerChange(question.id, e.target.value, question.type)}
+            onChange={(e) =>
+              handleAnswerChange(question.id, e.target.value, question.type)
+            }
           />
         );
-      
+
       case "multiple_choice":
         // Gérer le cas où possible_answers est une chaîne JSON
         let possibleAnswers = [];
@@ -207,7 +223,9 @@ const FormFillOut = ({ form, onBack }) => {
                 <input
                   type="checkbox"
                   checked={answers[question.id]?.includes(option) || false}
-                  onChange={() => handleAnswerChange(question.id, option, question.type)}
+                  onChange={() =>
+                    handleAnswerChange(question.id, option, question.type)
+                  }
                   className="h-4 w-4"
                 />
                 <span>{option}</span>
@@ -215,40 +233,46 @@ const FormFillOut = ({ form, onBack }) => {
             ))}
           </div>
         );
-      
+
       case "single_choice":
         // Gérer le cas où possible_answers est une chaîne JSON
         let singleChoiceOptions = [];
         if (typeof question.possible_answers === "string") {
-            try {
+          try {
             singleChoiceOptions = JSON.parse(question.possible_answers);
-            } catch (e) {
+          } catch (e) {
             console.error("Erreur lors du parsing des réponses possibles:", e);
             return <p className="text-red-500">Erreur: Options invalides</p>;
-            }
+          }
         } else if (Array.isArray(question.possible_answers)) {
-            singleChoiceOptions = question.possible_answers;
+          singleChoiceOptions = question.possible_answers;
         }
 
         return (
-            <div className="space-y-2">
+          <div className="space-y-2">
             {singleChoiceOptions.map((option, index) => (
-                <label key={index} className="flex items-center space-x-2">
+              <label key={index} className="flex items-center space-x-2">
                 <input
-                    type="radio"
-                    name={`single-choice-${question.id}`}
-                    checked={answers[question.id] === option}
-                    onChange={() => handleAnswerChange(question.id, option, question.type)}
-                    className="h-4 w-4"
+                  type="radio"
+                  name={`single-choice-${question.id}`}
+                  checked={answers[question.id] === option}
+                  onChange={() =>
+                    handleAnswerChange(question.id, option, question.type)
+                  }
+                  className="h-4 w-4"
                 />
                 <span>{option}</span>
-                </label>
+              </label>
             ))}
-            </div>
+          </div>
         );
-      
+
       default:
-        return <p className="text-red-500">Type de question non pris en charge: {question.type}</p>;
+        return (
+          <p className="text-red-500">
+            Type de question non pris en charge: {question.type}
+          </p>
+        );
     }
   };
 
@@ -263,12 +287,12 @@ const FormFillOut = ({ form, onBack }) => {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <div className="flex items-center space-x-2">
-        <button 
-            type="button" 
-            onClick={onBack} 
-            className="mb-1 p-2 bg-gray-100 hover:bg-[#993921] hover:text-white text-gray rounded-lg"
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-1 p-2 bg-gray-100 hover:bg-[#993921] hover:text-white text-gray rounded-lg"
         >
-            <CircleArrowLeft className="w-5 h-5" />
+          <CircleArrowLeft className="w-5 h-5" />
         </button>
       </div>
 
@@ -325,13 +349,13 @@ const FormFillOut = ({ form, onBack }) => {
         </button>
       </div>
 
-    
       {confirmationOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h3 className="text-lg font-medium mb-4">Confirmation</h3>
             <p className="text-gray-700 mb-6">
-              Êtes-vous sûr de vouloir soumettre vos réponses ? Une fois confirmée, cette action ne peut pas être annulée.
+              Êtes-vous sûr de vouloir soumettre vos réponses ? Une fois
+              confirmée, cette action ne peut pas être annulée.
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -354,5 +378,3 @@ const FormFillOut = ({ form, onBack }) => {
     </div>
   );
 };
-
-export default FormFillOut;

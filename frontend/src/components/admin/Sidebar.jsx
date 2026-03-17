@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserCircle, Users, UserPlus, FilePlus2, BookText, BookPlus, LogOut, FileSpreadsheet } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
+import API_URL from "../../config/api";
 
 const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem("user")); // Récupérer l'utilisateur depuis le stockage local
@@ -153,4 +154,3 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen }) => {
   );
 };
 
-export default Sidebar;

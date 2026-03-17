@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CircleArrowLeft } from "lucide-react";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import API_URL from "../../config/api";
 
 const ResponseList = ({ formTitle, question, onBack }) => {
   const [responses, setResponses] = useState([]);
@@ -15,7 +16,7 @@ const ResponseList = ({ formTitle, question, onBack }) => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3001/api/responses/question/${question.id}`, {
+        const response = await fetch(`${API_URL}/api/responses/question/${question.id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
