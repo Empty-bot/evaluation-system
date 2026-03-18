@@ -1,12 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const { testConnection } = require('./config/database');
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const courseRoutes = require('./routes/courses');
-const questionnaireRoutes = require('./routes/questionnaires');
-const questionRoutes = require('./routes/questions');
-const responseRoutes = require('./routes/responses');
+const express = require("express");
+const cors = require("cors");
+const { testConnection } = require("./config/database");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+const courseRoutes = require("./routes/courses");
+const questionnaireRoutes = require("./routes/questionnaires");
+const questionRoutes = require("./routes/questions");
+const responseRoutes = require("./routes/responses");
 const { generalLimiter, authLimiter } = require("./middleware/rateLimit");
 const helmet = require("helmet");
 const logger = require("./config/logger");
@@ -20,24 +20,28 @@ app.use(express.json());
 app.use(generalLimiter); // Appliquer la limite générale
 app.use(helmet()); // Sécuriser les headers HTTP
 
-
 app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.url} - ${req.ip}`);
-    next();
+  logger.info(`${req.method} ${req.url} - ${req.ip}`);
+  next();
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/courses', courseRoutes);
-app.use('/api/questionnaires', questionnaireRoutes);
-app.use('/api/questions', questionRoutes);
-app.use('/api/responses', responseRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/questionnaires", questionnaireRoutes);
+app.use("/api/questions", questionRoutes);
+app.use("/api/responses", responseRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 
 // Test route
-app.get('/api/test', (req, res) => {
-    res.json({ message: 'Backend server is running' });
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Backend server is running" });
+});
+
+// Route de santé — utilisée par Kubernetes pour vérifier que le backend est vivant
+router.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
 });
 
 // Test DB connection
