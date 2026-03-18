@@ -39,6 +39,11 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "Backend server is running" });
 });
 
+// Health check pour Kubernetes
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // Test DB connection
 testConnection();
 
