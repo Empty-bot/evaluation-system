@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: evaluation-frontend-service
+  namespace: evaluation-system
+spec:
+  # LoadBalancer : AWS crée une URL publique pour accéder à l'interface web
+  type: LoadBalancer
+  selector:
+    app: evaluation-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
