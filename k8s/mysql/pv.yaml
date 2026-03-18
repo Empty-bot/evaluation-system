@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: evaluation-system
+spec:
+  # Sur AWS EKS, le StorageClass "gp2" crée automatiquement un volume EBS
+  # gp2 = General Purpose SSD (inclus dans le free tier pour les premiers 30 Go)
+  storageClassName: gp2
+  accessModes:
+    # ReadWriteOnce : un seul pod peut lire/écrire à la fois (adapté pour MySQL)
+    - ReadWriteOnce
+  resources:
+    requests:
+      # 5 Go suffisent
+      storage: 5Gi

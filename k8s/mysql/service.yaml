@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: evaluation-mysql
+  namespace: evaluation-system
+spec:
+  # ClusterIP : MySQL n'est accessible qu'à l'intérieur du cluster
+  # Le backend y accède via le nom DNS "evaluation-mysql" sur le port 3306
+  # Aucun accès depuis internet — c'est voulu pour la sécurité
+  type: ClusterIP
+  selector:
+    app: evaluation-mysql
+  ports:
+    - port: 3306
+      targetPort: 3306

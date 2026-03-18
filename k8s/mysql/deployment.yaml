@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evaluation-mysql
+  namespace: evaluation-system
+spec:
+  # MySQL ne supporte pas plusieurs instances en écriture simultanée
+  # donc on garde 1 seul replica
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evaluation-mysql
+  template:
+    metadata:
+      labels:
+        app: evaluation-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: evaluation-secrets
+                  key: DB_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: evaluation-secrets
+                  key: DB_NAME
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: evaluation-secrets
+                  key: DB_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: evaluation-secrets
+                  key: DB_PASSWORD
+          volumeMounts:
+            # Monte le volume persistant EBS dans le dossier de données MySQL
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            # Monte le script SQL d'initialisation
+            # Exécuté automatiquement au premier démarrage du container
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d
+          # Vérifie que MySQL est prêt avant que le backend tente de s'y connecter
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        # Le script init-db.sql est monté via un ConfigMap (créé séparément)
+        - name: mysql-init
+          configMap:
+            name: mysql-init-config
