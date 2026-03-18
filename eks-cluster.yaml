@@ -1,0 +1,45 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  # Nom du cluster — doit correspondre à EKS_CLUSTER_NAME dans le Jenkinsfile
+  name: evaluation-cluster
+  region: us-east-1
+  version: "1.32"
+
+# Le cluster sera déployé dans un VPC dédié avec des subnets publics et privés
+# AWS crée automatiquement toute l'infrastructure réseau
+vpc:
+  cidr: 10.0.0.0/16
+
+# Groupe de noeuds workers — ce sont les machines EC2 qui font tourner les pods
+nodeGroups:
+  - name: evaluation-nodes
+    # t3.small : 2 vCPU, 2 Go RAM
+    # Suffisant pour un projet académique et éligible au free tier (750h/mois)
+    instanceType: t3.small
+    # 2 noeuds minimum pour avoir de la redondance
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 3
+    # Les noeuds sont dans des subnets privés — seuls les LoadBalancers
+    # sont exposés publiquement, pas les machines elles-mêmes
+    privateNetworking: true
+    # Permet à Kubernetes de créer des volumes EBS automatiquement
+    # pour nos PersistentVolumeClaims (MySQL)
+    iam:
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
+# Add-ons gérés par AWS
+addons:
+  - name: kube-proxy
+    version: latest
+  # Plugin réseau pour la communication entre pods
+  - name: vpc-cni
+    version: latest
+  # DNS interne du cluster (résolution des noms de services)
+  - name: coredns
+    version: latest
