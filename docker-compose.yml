@@ -1,5 +1,3 @@
-version: "3.8"
-
 networks:
   # Réseau interne partagé entre tous les services
   # Permet aux containers de se parler par nom (ex: backend contacte "mysql")
@@ -26,8 +24,6 @@ services:
       - mysql-data:/var/lib/mysql
       # Script d'initialisation : créé les tables au premier démarrage
       - ./backend/src/config/init-db.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "3306:3306"
     networks:
       - app-network
     healthcheck:
