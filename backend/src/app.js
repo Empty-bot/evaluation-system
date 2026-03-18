@@ -39,11 +39,6 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "Backend server is running" });
 });
 
-// Route de santé — utilisée par Kubernetes pour vérifier que le backend est vivant
-router.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
 // Test DB connection
 testConnection();
 
