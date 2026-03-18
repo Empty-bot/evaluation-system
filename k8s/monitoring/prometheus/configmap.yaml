@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: evaluation-system
+data:
+  prometheus.yml: |
+    global:
+      # Prometheus collecte les métriques toutes les 15 secondes
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    scrape_configs:
+      # Prometheus se surveille lui-même
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+
+      # Surveille les pods Kubernetes de notre namespace
+      # Kubernetes expose des métriques sur chaque pod via l'API
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - evaluation-system
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+
+      # Surveille les noeuds du cluster EKS (CPU, RAM, disque)
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+
+      # Surveille le backend Express via son endpoint /api/health
+      - job_name: 'evaluation-backend'
+        static_configs:
+          - targets: ['evaluation-backend-service:3001']
+        metrics_path: '/api/metrics'
