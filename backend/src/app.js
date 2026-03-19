@@ -11,6 +11,7 @@ const { generalLimiter, authLimiter } = require("./middleware/rateLimit");
 const helmet = require("helmet");
 const logger = require("./config/logger");
 const enrollmentRoutes = require("./routes/enrollments");
+const client = require("prom-client");
 
 const app = express();
 
@@ -19,6 +20,9 @@ app.use(cors());
 app.use(express.json());
 app.use(generalLimiter); // Appliquer la limite générale
 app.use(helmet()); // Sécuriser les headers HTTP
+
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics({ prefix: "evaluation_" });
 
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url} - ${req.ip}`);
@@ -42,6 +46,11 @@ app.get("/api/test", (req, res) => {
 // Health check pour Kubernetes
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok" });
+});
+
+app.get("/api/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.send(await client.register.metrics());
 });
 
 // Test DB connection
