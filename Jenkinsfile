@@ -109,7 +109,7 @@ pipeline {
                         aws configure set aws_secret_access_key \$AWS_SECRET_ACCESS_KEY
                         aws configure set region ${AWS_REGION}
 
-                        // Met à jour le fichier kubeconfig local pour pointer vers EKS
+                        # Met à jour le fichier kubeconfig local pour pointer vers EKS
                         aws eks update-kubeconfig \
                             --region ${AWS_REGION} \
                             --name ${EKS_CLUSTER_NAME}
@@ -129,22 +129,22 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 sh """
-                    // Créer le namespace s'il n'existe pas encore
+                    # Créer le namespace s'il n'existe pas encore
                     kubectl apply -f k8s/namespace.yaml
 
-                    // Appliquer les secrets (variables d'environnement sensibles)
+                    # Appliquer les secrets (variables d'environnement sensibles)
                     kubectl apply -f k8s/secrets.yaml -n ${K8S_NAMESPACE}
 
-                    // Déployer MySQL
+                    # Déployer MySQL
                     kubectl apply -f k8s/mysql/ -n ${K8S_NAMESPACE}
 
-                    // Déployer le backend
+                    # Déployer le backend
                     kubectl apply -f k8s/backend/ -n ${K8S_NAMESPACE}
 
-                    // Déployer le frontend
+                    # Déployer le frontend
                     kubectl apply -f k8s/frontend/ -n ${K8S_NAMESPACE}
 
-                    // Forcer le rolling update avec la nouvelle image taguée
+                    # Forcer le rolling update avec la nouvelle image taguée
                     kubectl set image deployment/evaluation-backend \
                         backend=${BACKEND_IMAGE}:${IMAGE_TAG} \
                         -n ${K8S_NAMESPACE}
