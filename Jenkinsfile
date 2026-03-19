@@ -132,9 +132,6 @@ pipeline {
                     # Créer le namespace s'il n'existe pas encore
                     kubectl apply -f k8s/namespace.yaml
 
-                    # Appliquer les secrets (variables d'environnement sensibles)
-                    kubectl apply -f k8s/secrets.yaml -n ${K8S_NAMESPACE}
-
                     # Déployer MySQL
                     kubectl apply -f k8s/mysql/ -n ${K8S_NAMESPACE}
 
