@@ -21,6 +21,7 @@ spec:
       containers:
         - name: frontend
           image: emptybot/evaluation-frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           # Le frontend est statique (Nginx) — pas de variables d'environnement
