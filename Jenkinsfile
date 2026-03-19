@@ -176,11 +176,11 @@ pipeline {
                 sh """
                     echo "Vérification du déploiement backend..."
                     kubectl rollout status deployment/evaluation-backend \
-                        -n ${K8S_NAMESPACE} --timeout=120s
+                        -n ${K8S_NAMESPACE} --timeout=300s
 
                     echo "Vérification du déploiement frontend..."
                     kubectl rollout status deployment/evaluation-frontend \
-                        -n ${K8S_NAMESPACE} --timeout=120s
+                        -n ${K8S_NAMESPACE} --timeout=300s
 
                     echo "État des pods :"
                     kubectl get pods -n ${K8S_NAMESPACE}
