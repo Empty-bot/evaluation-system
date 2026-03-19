@@ -57,11 +57,21 @@ pipeline {
             steps {
                 echo "Build de l'image frontend : ${FRONTEND_IMAGE}:${IMAGE_TAG}"
                 sh """
+                    BACKEND_HOST=\$(kubectl get svc evaluation-backend-service \
+                        -n ${K8S_NAMESPACE} \
+                        --output jsonpath='{.status.loadBalancer.ingress[0].hostname}' \
+                        2>/dev/null)
+                    
+                    if [ -z "\$BACKEND_HOST" ]; then
+                        BACKEND_URL="http://localhost:3001"
+                    else
+                        BACKEND_URL="http://\${BACKEND_HOST}:3001"
+                    fi
+                    
+                    echo "VITE_API_URL=\$BACKEND_URL"
+                    
                     docker build \
-                        --build-arg VITE_API_URL=http://\$(kubectl get svc evaluation-backend-service \
-                            -n ${K8S_NAMESPACE} \
-                            --output jsonpath='{.status.loadBalancer.ingress[0].hostname}' \
-                            2>/dev/null || echo 'localhost:3001') \
+                        --build-arg VITE_API_URL=\$BACKEND_URL \
                         -t ${FRONTEND_IMAGE}:${IMAGE_TAG} \
                         -t ${FRONTEND_IMAGE}:latest \
                         ./frontend
