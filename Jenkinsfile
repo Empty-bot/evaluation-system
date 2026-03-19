@@ -162,7 +162,8 @@ pipeline {
         stage('Deploy Monitoring') {
             steps {
                 sh """
-                    kubectl apply -f k8s/monitoring/ -n ${K8S_NAMESPACE}
+                    kubectl apply -f k8s/monitoring/prometheus/ -n ${K8S_NAMESPACE}
+                    kubectl apply -f k8s/monitoring/grafana/ -n ${K8S_NAMESPACE}
                 """
             }
         }
