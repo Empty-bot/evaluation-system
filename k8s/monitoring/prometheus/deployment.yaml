@@ -60,6 +60,11 @@ rules:
   - apiGroups: [""]
     resources: ["nodes", "pods", "services", "endpoints"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes/metrics", "nodes/proxy"]
+    verbs: ["get", "list", "watch"]
+  - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+    verbs: ["get"]
 ---
 # Lie le ServiceAccount au ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
